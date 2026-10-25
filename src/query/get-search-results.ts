@@ -25,7 +25,7 @@ const searchAnime = async (params: SearchAnimeParams): Promise<IAnimeSearch> => 
           ? "/search"
           : "/filter";
 
-      if (endpoint === "/search") {
+      if (cleanQuery) {
         requestParams.query = cleanQuery;
       }
 

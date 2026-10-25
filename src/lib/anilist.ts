@@ -576,11 +576,81 @@ export async function getAniListAnimeRelations(
     .filter((item: MediaList) => item && !item.isAdult);
 }
 
+const SORT_MAPPING: Record<string, string[]> = {
+  default: ["POPULARITY_DESC"],
+  "recently-added": ["ID_DESC"],
+  "recently-updated": ["UPDATED_AT_DESC"],
+  score: ["SCORE_DESC"],
+  "name-a-z": ["TITLE_ROMAJI"],
+  "released-date": ["START_DATE_DESC"],
+  "most-watched": ["POPULARITY_DESC"],
+};
+
+const STATUS_MAPPING: Record<string, string> = {
+  "finished-airing": "FINISHED",
+  "currently-airing": "RELEASING",
+  "not-yet-aired": "NOT_YET_RELEASED",
+};
+
+const GENRE_OR_TAG_MAP: Record<string, { genre?: string; tag?: string }> = {
+  action: { genre: "Action" },
+  adventure: { genre: "Adventure" },
+  cars: { tag: "Cars" },
+  comedy: { genre: "Comedy" },
+  dementia: { tag: "Dementia" },
+  demons: { tag: "Demons" },
+  drama: { genre: "Drama" },
+  ecchi: { genre: "Ecchi" },
+  fantasy: { genre: "Fantasy" },
+  game: { tag: "Video Games" },
+  harem: { tag: "Harem" },
+  historical: { tag: "Historical" },
+  horror: { genre: "Horror" },
+  isekai: { tag: "Isekai" },
+  josei: { tag: "Josei" },
+  kids: { tag: "Kids" },
+  magic: { tag: "Magic" },
+  "martial-arts": { tag: "Martial Arts" },
+  mecha: { genre: "Mecha" },
+  military: { tag: "Military" },
+  music: { genre: "Music" },
+  mystery: { genre: "Mystery" },
+  parody: { tag: "Parody" },
+  police: { tag: "Police" },
+  psychological: { genre: "Psychological" },
+  romance: { genre: "Romance" },
+  samurai: { tag: "Samurai" },
+  school: { tag: "School" },
+  "sci-fi": { genre: "Sci-Fi" },
+  seinen: { tag: "Seinen" },
+  shoujo: { tag: "Shoujo" },
+  "shoujo ai": { tag: "Yuri" },
+  shounen: { tag: "Shounen" },
+  "shounen ai": { tag: "Shounen Ai" },
+  "slice-of-life": { genre: "Slice of Life" },
+  space: { tag: "Space" },
+  sports: { genre: "Sports" },
+  "super-power": { tag: "Super Power" },
+  supernatural: { genre: "Supernatural" },
+  thriller: { genre: "Thriller" },
+  vampire: { tag: "Vampire" },
+};
+
 export async function getAniListSearchResults(
   params: SearchAnimeParams,
 ): Promise<IAnimeSearch> {
   const query = `
-    query ($search: String, $page: Int, $perPage: Int, $genre: String, $format: MediaFormat, $status: MediaStatus, $sort: [MediaSort]) {
+    query (
+      $search: String,
+      $page: Int,
+      $perPage: Int,
+      $format: MediaFormat,
+      $status: MediaStatus,
+      $season: MediaSeason,
+      $genre_in: [String],
+      $tag_in: [String],
+      $sort: [MediaSort]
+    ) {
       Page(page: $page, perPage: $perPage) {
         pageInfo {
           total
@@ -589,30 +659,108 @@ export async function getAniListSearchResults(
           hasNextPage
           perPage
         }
-        media(search: $search, type: ANIME, genre: $genre, format: $format, status: $status, sort: $sort, isAdult: false) {
+        media(
+          search: $search,
+          type: ANIME,
+          format: $format,
+          status: $status,
+          season: $season,
+          genre_in: $genre_in,
+          tag_in: $tag_in,
+          sort: $sort,
+          isAdult: false
+        ) {
           ${MEDIA_FIELDS}
+        }
+      }
+      countCheck: Page(page: 1, perPage: 50) {
+        pageInfo {
+          total
+          hasNextPage
+        }
+        media(
+          search: $search,
+          type: ANIME,
+          format: $format,
+          status: $status,
+          season: $season,
+          genre_in: $genre_in,
+          tag_in: $tag_in,
+          isAdult: false
+        ) {
+          id
         }
       }
     }
   `;
 
+  const cleanQuery = params.q ? params.q.replace(/^"+|"+$/g, "").trim() : "";
+
+  let sortValue = ["POPULARITY_DESC"];
+  if (params.sort && SORT_MAPPING[params.sort]) {
+    sortValue = SORT_MAPPING[params.sort];
+  } else if (cleanQuery) {
+    sortValue = ["SEARCH_MATCH", "POPULARITY_DESC"];
+  }
+
+  const statusValue = params.status
+    ? STATUS_MAPPING[params.status] || (params.status.toUpperCase() as any)
+    : undefined;
+
+  const formatValue =
+    params.type && params.type !== "all"
+      ? (params.type.toUpperCase() as any)
+      : undefined;
+
+  const seasonValue = params.season
+    ? (params.season.toUpperCase() as any)
+    : undefined;
+
+  const genreIn: string[] = [];
+  const tagIn: string[] = [];
+  if (params.genres) {
+    params.genres
+      .split(",")
+      .map((g) => g.trim().toLowerCase())
+      .filter(Boolean)
+      .forEach((g) => {
+        const mapped = GENRE_OR_TAG_MAP[g];
+        if (mapped?.genre) genreIn.push(mapped.genre);
+        if (mapped?.tag) tagIn.push(mapped.tag);
+      });
+  }
+
   const variables: Record<string, any> = {
     page: params.page || 1,
     perPage: 20,
-    search: params.q ? params.q.replace(/^"+|"+$/g, "").trim() || undefined : undefined,
-    genre: params.genres || undefined,
-    format: params.type ? (params.type.toUpperCase() as any) : undefined,
-    status: params.status ? (params.status.toUpperCase() as any) : undefined,
-    sort: params.sort ? [params.sort.toUpperCase() as any] : ["POPULARITY_DESC"],
+    search: cleanQuery || undefined,
+    format: formatValue,
+    status: statusValue,
+    season: seasonValue,
+    genre_in: genreIn.length ? genreIn : undefined,
+    tag_in: tagIn.length ? tagIn : undefined,
+    sort: sortValue,
   };
 
   const data = await fetchAniListGraphQL(query, variables);
   const pageInfo = data.Page?.pageInfo;
+  const countCheck = data.countCheck?.pageInfo;
   const results = (data.Page?.media || []) as MediaList[];
   const filtered = results.filter((m) => !m.isAdult);
 
-  const calculatedPages = Math.ceil((pageInfo?.total || 0) / 20);
-  const totalPages = Math.min(calculatedPages || 1, 20);
+  const currentPage = pageInfo?.currentPage || params.page || 1;
+  const hasNextPage = Boolean(pageInfo?.hasNextPage);
+
+  let totalPages = 1;
+  if (!hasNextPage) {
+    totalPages = currentPage;
+  } else if (countCheck && !countCheck.hasNextPage && countCheck.total) {
+    totalPages = Math.ceil(countCheck.total / 20);
+  } else if (pageInfo?.total && pageInfo.total < 5000) {
+    totalPages = Math.ceil(pageInfo.total / 20);
+  } else {
+    totalPages = !cleanQuery ? 20 : currentPage + 1;
+  }
 
   return {
     animes: filtered.map((m) => ({
@@ -627,8 +775,8 @@ export async function getAniListSearchResults(
       type: m.format as any,
     })),
     totalPages: totalPages > 0 ? totalPages : 1,
-    hasNextPage: pageInfo?.hasNextPage ?? false,
-    currentPage: pageInfo?.currentPage ?? 1,
+    hasNextPage,
+    currentPage,
   };
 }
 

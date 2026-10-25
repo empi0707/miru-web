@@ -24,11 +24,21 @@ function Pagination({
   handlePreviousPage,
   handlePageChange,
 }: Props) {
+  if (totalPages <= 1) return null;
+
   return (
     <PaginationShad className="mt-10">
       <PaginationContent>
-        <PaginationItem onClick={handlePreviousPage}>
-          <PaginationPrevious href="#" />
+        <PaginationItem
+          onClick={(e) => {
+            e.preventDefault();
+            if (currentPage > 1) handlePreviousPage();
+          }}
+        >
+          <PaginationPrevious
+            href="#"
+            className={currentPage <= 1 ? "pointer-events-none opacity-40" : ""}
+          />
         </PaginationItem>
 
         {Array.from({ length: totalPages }, (_, index) => index + 1)
@@ -49,7 +59,12 @@ function Pagination({
           .map((page, index) => (
             <PaginationItem
               key={index}
-              onClick={() => typeof page === "number" && handlePageChange(page)}
+              onClick={(e) => {
+                e.preventDefault();
+                if (typeof page === "number" && page !== currentPage) {
+                  handlePageChange(page);
+                }
+              }}
             >
               {page === "..." ? (
                 <PaginationEllipsis />
@@ -61,8 +76,18 @@ function Pagination({
             </PaginationItem>
           ))}
 
-        <PaginationItem onClick={handleNextPage}>
-          <PaginationNext href="#" />
+        <PaginationItem
+          onClick={(e) => {
+            e.preventDefault();
+            if (currentPage < totalPages) handleNextPage();
+          }}
+        >
+          <PaginationNext
+            href="#"
+            className={
+              currentPage >= totalPages ? "pointer-events-none opacity-40" : ""
+            }
+          />
         </PaginationItem>
       </PaginationContent>
     </PaginationShad>

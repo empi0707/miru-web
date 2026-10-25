@@ -44,6 +44,20 @@ const SearchResults = () => {
     genres: params.genres,
   });
 
+  React.useEffect(() => {
+    setFilters({
+      q: params.q,
+      page: params.page,
+      type: params.type,
+      status: params.status,
+      rated: params.rated,
+      season: params.season,
+      language: params.language,
+      sort: params.sort,
+      genres: params.genres,
+    });
+  }, [params]);
+
   const handleNextPage = () => {
     if (searchResults?.hasNextPage) {
       handlePageChange((params.page || 1) + 1);
@@ -68,26 +82,29 @@ const SearchResults = () => {
   };
 
   const applyFilters = () => {
-    const searchParams = new URLSearchParams();
+    const nextParams = new URLSearchParams();
 
-    onChange("q", params.q);
+    if (displayPhrase !== "") {
+      nextParams.set("q", displayPhrase);
+    }
 
     Object.entries(filters).forEach(([key, value]) => {
+      if (key === "q" || key === "page") return;
       if (typeof value === "string" && value.trim() !== "") {
-        searchParams.set(key, value);
+        nextParams.set(key, value);
       } else if (typeof value === "number" && !isNaN(value)) {
-        searchParams.set(key, value.toString());
+        nextParams.set(key, value.toString());
       }
     });
 
-    searchParams.delete("page");
+    nextParams.delete("page");
 
-    router.push(`/search?${searchParams.toString()}`);
+    router.push(`/search?${nextParams.toString()}`);
   };
 
   const resetFilters = () => {
     setFilters({
-      q: "",
+      q: params.q || "",
       page: 1,
       type: "",
       status: "",
@@ -97,7 +114,11 @@ const SearchResults = () => {
       sort: "",
       genres: "",
     });
-    router.push('/search?q=""');
+    if (params.q && params.q.trim() !== "") {
+      router.push(`/search?q=${encodeURIComponent(params.q)}`);
+    } else {
+      router.push('/search?q=""');
+    }
   };
 
   return (
@@ -197,7 +218,7 @@ const SearchResults = () => {
           "Catalog Results"
         ) : (
           <>
-            Results for <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">&quot;{params.q}&quot;</span>
+            Results for <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">&quot;{displayPhrase}&quot;</span>
           </>
         )}
       </div>
@@ -227,10 +248,19 @@ const SearchResults = () => {
           </BlurFade>
         ))}
       </div>
-      {searchResults && searchResults.totalPages && (
+      {!isLoading && searchResults && searchResults.animes.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-center gap-3 w-full">
+          <p className="text-xl font-bold text-white">No results found</p>
+          <p className="text-sm text-slate-400">
+            Try adjusting your search query or removing some filters.
+          </p>
+        </div>
+      )}
+
+      {searchResults && searchResults.totalPages > 1 && (
         <Pagination
-          totalPages={searchResults?.totalPages}
-          currentPage={params.page}
+          totalPages={searchResults.totalPages}
+          currentPage={params.page || 1}
           handleNextPage={handleNextPage}
           handlePageChange={handlePageChange}
           handlePreviousPage={handlePreviousPage}
