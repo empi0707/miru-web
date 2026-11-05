@@ -10,6 +10,7 @@ import { PublicEnvScript } from "next-runtime-env";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { BRAND } from "@/fork/config";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,16 +18,16 @@ const geistSans = localFont({
   weight: "100 900",
 });
 
-const APP_NAME = "Miru";
-const APP_DEFAULT_TITLE = "Miru - Stream Anime with No Ads";
+const APP_NAME = BRAND;
+const APP_DEFAULT_TITLE = `${BRAND} - Stream Anime with No Ads`;
 const APP_DESCRIPTION =
-  "Watch your favorite anime anywhere, anytime with ease and no ads on Miru.";
+  `Watch your favorite anime anywhere, anytime with ease and no ads on ${BRAND}.`;
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
   title: {
     default: APP_DEFAULT_TITLE,
-    template: "%s | Miru",
+    template: `%s | ${BRAND}`,
   },
   description: APP_DESCRIPTION,
   icons: {
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: APP_DEFAULT_TITLE,
   },
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   formatDetection: {
     telephone: false,
   },

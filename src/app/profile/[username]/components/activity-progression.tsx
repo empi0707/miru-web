@@ -9,6 +9,7 @@ import { Tooltip } from "react-tooltip";
 import { Bookmark, WatchHistory } from "@/hooks/use-get-bookmark";
 import { Tv, Sparkles, Calendar, Clock, X, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { BRAND } from "@/fork/config";
 
 type HeatmapValue = {
   date: string;
@@ -359,7 +360,7 @@ const ActivityProgression = ({ targetUser }: Props) => {
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-bold text-purple-300 uppercase tracking-wider">
-                Joined Miru
+                Joined {BRAND}
               </span>
               <span className="text-xs text-gray-300 font-semibold mt-0.5">
                 First joined in {formattedJoinedDate}

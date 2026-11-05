@@ -8,6 +8,8 @@ import Avatar from "@/components/common/avatar";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import LoginPopoverButton from "@/components/login-popover-button";
+import { AUTH_ENABLED, COMMENTS_ENABLED } from "@/fork/config";
+import { withFeature } from "@/fork/with-feature";
 
 type Props = {
   animeId: string;
@@ -129,7 +131,7 @@ const CommentsSection = ({ animeId, animeTitle, episodeNumber }: Props) => {
                 </Button>
               </div>
             </form>
-          ) : (
+          ) : AUTH_ENABLED && (
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 glass-panel rounded-2xl border border-white/10 text-sm">
               <p className="text-slate-400 text-xs sm:text-sm">Join the discussion! Log in to share comments with the community.</p>
               <LoginPopoverButton />
@@ -243,4 +245,4 @@ const CommentsSection = ({ animeId, animeTitle, episodeNumber }: Props) => {
   );
 };
 
-export default CommentsSection;
+export default withFeature(COMMENTS_ENABLED, CommentsSection);

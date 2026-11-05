@@ -7,6 +7,8 @@ import DiscordIcon from "@/icons/discord";
 import { pb } from "@/lib/pocketbase";
 import { toast } from "sonner";
 import { useAuthStore } from "@/store/auth-store";
+import { withFeature } from "@/fork/with-feature";
+import { AUTH_ENABLED } from "@/fork/config";
 
 type FormData = {
   username: string;
@@ -279,4 +281,4 @@ function LoginPopoverButton() {
   );
 }
 
-export default LoginPopoverButton;
+export default withFeature(AUTH_ENABLED, LoginPopoverButton);

@@ -20,6 +20,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { pb } from "@/lib/pocketbase";
 import NavbarAvatar from "./navbar-avatar";
 import { toast } from "sonner";
+import { BRAND } from "@/fork/config";
 
 const menuItems: Array<{ title: string; href?: string }> = [];
 
@@ -80,7 +81,7 @@ const NavBar = () => {
         >
           <Image
             src="/miru-logo.svg"
-            alt="Miru logo"
+            alt={`${BRAND} logo`}
             width={40}
             height={40}
             className="rounded-xl shadow-lg transition-transform group-hover:scale-105"
@@ -91,7 +92,7 @@ const NavBar = () => {
               "text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-500 to-cyan-400 tracking-widest",
             ])}
           >
-            Miru
+            {BRAND}
           </h1>
         </Link>
 

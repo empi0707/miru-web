@@ -31,6 +31,7 @@ import Loading from "@/app/loading";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
 import useBookMarks from "@/hooks/use-get-bookmark";
+import { useSimilarAnime } from "@/fork/similar-anime";
 
 const SelectOptions: ISelectOptions[] = [
   {
@@ -63,6 +64,7 @@ const SelectOptions: ISelectOptions[] = [
 const Page = () => {
   const { slug } = useParams();
   const { data: anime, isLoading } = useGetAnimeDetails(slug as string);
+  const { data: similar } = useSimilarAnime(slug as string);
   const { auth } = useAuthStore();
   const { bookmarks, createOrUpdateBookMark } = useBookMarks({
     animeID: slug as string,
@@ -324,9 +326,9 @@ const Page = () => {
         </Tabs>
 
         {/* Recommended Anime Carousel */}
-        {!!anime.recommendedAnimes.length && (
+        {!!similar?.recommended.length && (
           <AnimeCarousel
-            anime={anime.recommendedAnimes as IAnime[]}
+            anime={similar.recommended as IAnime[]}
             title="You Might Also Like"
             className="pt-10"
           />

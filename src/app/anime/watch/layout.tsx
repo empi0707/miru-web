@@ -26,6 +26,7 @@ import useBookMarks from "@/hooks/use-get-bookmark";
 import { toast } from "sonner";
 import { useGetAllEpisodes } from "@/query/get-all-episodes";
 import CommentsSection from "@/components/comments/comments-section";
+import { useSimilarAnime } from "@/fork/similar-anime";
 
 type Props = {
   children: ReactNode;
@@ -54,6 +55,7 @@ const Layout = (props: Props) => {
   }, [currentAnimeId, animeId]);
 
   const { data: anime, isLoading } = useGetAnimeDetails(animeId as string);
+  const { data: similar } = useSimilarAnime(animeId);
 
   useEffect(() => {
     if (anime) {
@@ -235,11 +237,11 @@ const Layout = (props: Props) => {
 
         <AnimeCarousel
           title={"Also Watch"}
-          anime={anime?.relatedAnimes as IAnime[]}
+          anime={similar?.alsoWatch as IAnime[]}
         />
         <AnimeCarousel
           title={"Recommended"}
-          anime={anime?.recommendedAnimes as IAnime[]}
+          anime={similar?.recommended as IAnime[]}
         />
       </Container>
     )

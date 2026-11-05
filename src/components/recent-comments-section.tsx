@@ -7,6 +7,8 @@ import { useGetRecentComments } from "@/hooks/use-comments";
 import Avatar from "@/components/common/avatar";
 import { formatDistanceToNow } from "date-fns";
 import Container from "@/components/container";
+import { withFeature } from "@/fork/with-feature";
+import { COMMENTS_ENABLED } from "@/fork/config";
 
 const RecentCommentsSection = () => {
   const { data: comments, isLoading } = useGetRecentComments(8);
@@ -136,4 +138,4 @@ const RecentCommentsSection = () => {
   );
 };
 
-export default RecentCommentsSection;
+export default withFeature(COMMENTS_ENABLED, RecentCommentsSection);

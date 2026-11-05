@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { Play, Info, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 import { MediaList } from "@/types/miruro-api";
+import { BRAND } from "@/fork/config";
 
 type IHeroSectionProps = {
   spotlightAnime: MediaList[];
@@ -130,7 +131,7 @@ const HeroCanvasItem = ({
 
   const cleanDescription = (anime as any).description
     ? (anime as any).description.replace(/<[^>]*>?/gm, "").trim()
-    : "Stream this breathtaking title on Miru with zero ad interruptions and crisp playback.";
+    : `Stream this breathtaking title on ${BRAND} with zero ad interruptions and crisp playback.`;
 
   return (
     <div className="relative w-full h-[85vh] min-h-[580px] max-h-[860px] overflow-hidden">
