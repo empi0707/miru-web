@@ -6,8 +6,36 @@
  * rebuild after changing them.
  */
 
+const env = (value: string | undefined, fallback: string) =>
+  value && value.trim() ? value.trim() : fallback;
+
+/* ---------- Brand ---------- */
+
 /** Brand name shown across the UI, metadata and PWA manifest. */
-export const BRAND = process.env.NEXT_PUBLIC_BRAND || "Miru";
+export const BRAND = env(process.env.NEXT_PUBLIC_BRAND, "Miru");
+
+/** Short slogan used in the default <title> and PWA name: "<BRAND> - <TAGLINE>". */
+export const BRAND_TAGLINE = env(process.env.NEXT_PUBLIC_BRAND_TAGLINE, "Stream Anime with No Ads");
+
+/** Meta / Open Graph / PWA description. */
+export const BRAND_DESCRIPTION = env(
+  process.env.NEXT_PUBLIC_BRAND_DESCRIPTION,
+  `Watch your favorite anime anywhere, anytime with ease and no ads on ${BRAND}.`,
+);
+
+/** Logo (navbar, footer, favicon, PWA icon). A path under /public, e.g. /brand/logo.svg. */
+export const BRAND_LOGO = env(process.env.NEXT_PUBLIC_BRAND_LOGO, "/miru-logo.svg");
+
+/** Apple touch icon (PNG, ideally 180–192px). A path under /public. */
+export const BRAND_APPLE_ICON = env(process.env.NEXT_PUBLIC_BRAND_APPLE_ICON, "/icon-192x192.png");
+
+/** Primary accent colour (hex, e.g. #22d3ee). Empty = original theme. */
+export const BRAND_PRIMARY = env(process.env.NEXT_PUBLIC_BRAND_PRIMARY, "");
+
+/** Secondary accent used in gradients (hex). Empty = derived from primary. */
+export const BRAND_SECONDARY = env(process.env.NEXT_PUBLIC_BRAND_SECONDARY, "");
+
+/* ---------- Feature flags ---------- */
 
 /** Login / sign up. Disabled by default; set NEXT_PUBLIC_ENABLE_AUTH=true to re-enable. */
 export const AUTH_ENABLED = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";

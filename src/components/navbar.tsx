@@ -20,7 +20,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { pb } from "@/lib/pocketbase";
 import NavbarAvatar from "./navbar-avatar";
 import { toast } from "sonner";
-import { BRAND } from "@/fork/config";
+import { BRAND, BRAND_LOGO } from "@/fork/config";
 
 const menuItems: Array<{ title: string; href?: string }> = [];
 
@@ -80,7 +80,7 @@ const NavBar = () => {
           className="flex items-center gap-3 cursor-pointer group"
         >
           <Image
-            src="/miru-logo.svg"
+            src={BRAND_LOGO}
             alt={`${BRAND} logo`}
             width={40}
             height={40}

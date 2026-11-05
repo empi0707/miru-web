@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { brandTailwindColors } from "./src/fork/brand-colors";
 
 const config: Config = {
 	darkMode: ["class"],
@@ -10,6 +11,7 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
+				...brandTailwindColors(),
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {

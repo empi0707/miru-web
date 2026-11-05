@@ -10,7 +10,8 @@ import { PublicEnvScript } from "next-runtime-env";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { BRAND } from "@/fork/config";
+import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_LOGO, BRAND_APPLE_ICON } from "@/fork/config";
+import BrandStyle from "@/fork/brand-style";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -19,9 +20,9 @@ const geistSans = localFont({
 });
 
 const APP_NAME = BRAND;
-const APP_DEFAULT_TITLE = `${BRAND} - Stream Anime with No Ads`;
+const APP_DEFAULT_TITLE = `${BRAND} - ${BRAND_TAGLINE}`;
 const APP_DESCRIPTION =
-  `Watch your favorite anime anywhere, anytime with ease and no ads on ${BRAND}.`;
+  BRAND_DESCRIPTION;
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -31,8 +32,8 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   icons: {
-    icon: "/miru-logo.svg",
-    apple: "/icon-192x192.png",
+    icon: BRAND_LOGO,
+    apple: BRAND_APPLE_ICON,
   },
   appleWebApp: {
     capable: true,
@@ -66,6 +67,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <BrandStyle />
         {gaId && (
           <>
             <Script

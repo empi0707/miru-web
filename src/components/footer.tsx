@@ -1,13 +1,13 @@
 import React from "react";
 import Image from "next/image";
-import { BRAND } from "@/fork/config";
+import { BRAND, BRAND_LOGO } from "@/fork/config";
 
 const Footer = () => {
   return (
     <footer className="w-full bg-slate-950/80 border-t border-slate-900 shadow-xl p-6 flex flex-col items-center space-y-4">
       <div className="flex items-center gap-2">
         <Image
-          src="/miru-logo.svg"
+          src={BRAND_LOGO}
           alt={`${BRAND} logo`}
           width="40"
           height="40"
