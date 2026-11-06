@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React from "react";
 import Container from "./container";
 import AnimeCard from "./anime-card";
@@ -36,21 +37,21 @@ const AnimeSections = ({
         <div className="flex items-center gap-3">
           <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-indigo-500 to-cyan-400 shrink-0" />
           <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            {sectionTitle}
+            {t(sectionTitle)}
           </h2>
         </div>
 
         {onPageChange && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-400 font-medium mr-1">
-              Page {page}
+              {t("Page {page}", { page })}
             </span>
             <Button
               size="icon"
               onClick={() => onPageChange(Math.max(page - 1, 1))}
               disabled={page <= 1}
               className="h-8 w-8 rounded-lg bg-slate-900 border border-white/10 text-white hover:bg-indigo-600 hover:border-indigo-500 disabled:opacity-30 disabled:hover:bg-slate-900 transition-all"
-              aria-label="Previous page"
+              aria-label={t("Previous page")}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -59,7 +60,7 @@ const AnimeSections = ({
               onClick={() => onPageChange(page + 1)}
               disabled={!hasNextPage}
               className="h-8 w-8 rounded-lg bg-slate-900 border border-white/10 text-white hover:bg-indigo-600 hover:border-indigo-500 disabled:opacity-30 disabled:hover:bg-slate-900 transition-all"
-              aria-label="Next page"
+              aria-label={t("Next page")}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

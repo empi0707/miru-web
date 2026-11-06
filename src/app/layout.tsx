@@ -1,3 +1,4 @@
+import { LANGUAGE } from "@/fork/i18n";
 import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -65,7 +66,7 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={LANGUAGE} suppressHydrationWarning>
       <head>
         <BrandStyle />
         {gaId && (

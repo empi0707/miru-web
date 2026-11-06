@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React, { useState } from "react";
 import { CirclePlay } from "lucide-react";
 import Button from "./common/custom-button";
@@ -29,7 +30,7 @@ const WatchTrailer = ({ videoHref }: { videoHref: string }) => {
         LeftIcon={CirclePlay}
         onClick={() => setIsVideoOpen((prev) => !prev)}
       >
-        Watch Trailer
+        {t("Watch Trailer")}
       </Button>
       <AnimatePresence>
         {isVideoOpen && (

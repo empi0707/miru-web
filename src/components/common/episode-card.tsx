@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React from "react";
 
 import { cn } from "@/lib/utils";
@@ -73,7 +74,7 @@ const EpisodeCard = ({
             !isSelected && hasWatchedEpisode && "bg-slate-950/80 text-gray-500 border-white/5",
           ])}
         >
-          {`Episode ${props.episode.number}`}
+          {t("Episode {n}", { n: props.episode.number })}
         </div>
       </Link>
     );
@@ -93,7 +94,7 @@ const EpisodeCard = ({
           ])}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <span className="shrink-0">{`Episode ${props.episode.number}`}</span>
+            <span className="shrink-0">{t("Episode {n}", { n: props.episode.number })}</span>
             {props.episode.title && props.episode.title !== `Episode ${props.episode.number}` && (
               <span className="text-xs opacity-75 line-clamp-1 font-normal">
                 - {props.episode.title}

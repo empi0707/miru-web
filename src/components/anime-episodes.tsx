@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
@@ -91,7 +92,7 @@ const AnimeEpisodes = ({ animeId }: Props) => {
       <div className="flex flex-col sm:flex-row w-full items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <span className="w-1.5 h-6 rounded-full bg-gradient-to-b from-cyan-400 to-blue-600 shadow-sm shadow-cyan-500/50" />
-          <h3 className="text-xl font-bold text-white tracking-wide">Episodes</h3>
+          <h3 className="text-xl font-bold text-white tracking-wide">{t("Episodes")}</h3>
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           {ranges.length > 0 && (
@@ -99,7 +100,7 @@ const AnimeEpisodes = ({ animeId }: Props) => {
               <SelectTrigger className="w-[140px] sm:w-[160px] glass-panel border border-white/10 rounded-xl text-xs font-semibold">
                 <SelectValue
                   className="text-white"
-                  placeholder="Select Range"
+                  placeholder={t("Select Range")}
                 />
               </SelectTrigger>
               <SelectContent className="glass-panel border border-white/10 rounded-xl">
@@ -116,7 +117,7 @@ const AnimeEpisodes = ({ animeId }: Props) => {
           <div className="relative flex-1 sm:w-64 max-w-[21.875rem]">
             <Search className="absolute inset-y-0 left-3 m-auto h-4 w-4 text-slate-400" />
             <Input
-              placeholder="Search episode..."
+              placeholder={t("Search episode...")}
               className="w-full pl-9 text-xs glass-panel border border-white/10 rounded-xl text-white placeholder-slate-400 focus-visible:ring-cyan-400/50"
               onChange={handleSearch}
             />
@@ -134,7 +135,7 @@ const AnimeEpisodes = ({ animeId }: Props) => {
         ))}
         {!episodes.length && !isLoading && (
           <div className="col-span-full flex items-center justify-center py-12 glass-panel rounded-2xl border border-white/10 text-slate-400 text-sm font-medium">
-            No Episodes Available
+            {t("No Episodes Available")}
           </div>
         )}
         {isLoading &&

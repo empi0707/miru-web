@@ -1,3 +1,4 @@
+import { t } from "@/fork/i18n";
 import React from "react";
 import Container from "./container";
 import FeaturedCollectionCard from "./featured-collection-card";
@@ -21,7 +22,7 @@ const FeaturedCollection = ({ featuredAnime, loading }: Props) => {
       <div className="flex items-center gap-3">
         <div className="w-1.5 h-6 rounded-full bg-gradient-to-b from-indigo-500 to-violet-500 shrink-0" />
         <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-          Featured Collections
+          {t("Featured Collections")}
         </h2>
       </div>
 

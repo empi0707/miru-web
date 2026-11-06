@@ -1,3 +1,4 @@
+import { t } from "@/fork/i18n";
 import React from "react";
 import Image from "next/image";
 
@@ -34,7 +35,7 @@ const CharacterCard = ({ ...props }: Props) => {
           {props.character.character.name}
         </h5>
         <p className="line-clamp-1 text-xs text-slate-400">
-          {props.character.character.cast}
+          {t(props.character.character.cast)}
         </p>
       </div>
     </div>

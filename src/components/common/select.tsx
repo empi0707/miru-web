@@ -1,3 +1,4 @@
+import { t } from "@/fork/i18n";
 import React from "react";
 import {
   Select as SelectCN,
@@ -37,14 +38,14 @@ function Select(props: Props) {
         ) : (
           <></>
         )}
-        <SelectValue placeholder={props.placeholder} />
+        <SelectValue placeholder={t(props.placeholder)} />
       </SelectTrigger>
       <SelectContent className={cn("z-[101] text-sm", props.className)}>
         <SelectGroup>
           {props.options.map((option, i) => (
             <div key={i} className="flex items-center">
               {option.icon && <option.icon />}
-              <SelectItem value={option.value}>{option.label}</SelectItem>
+              <SelectItem value={option.value}>{t(option.label)}</SelectItem>
             </div>
           ))}
         </SelectGroup>

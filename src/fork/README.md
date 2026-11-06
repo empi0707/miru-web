@@ -19,6 +19,9 @@ NEXT_PUBLIC_BRAND_APPLE_ICON=         # apple-touch-icon PNG under /public (/ico
 NEXT_PUBLIC_BRAND_PRIMARY="#22d3ee"   # primary accent hex — QUOTE IT (# starts a comment in .env)
 NEXT_PUBLIC_BRAND_SECONDARY=          # gradient partner hex; empty = derived from primary
 
+# Language
+NEXT_PUBLIC_LANGUAGE=fr               # UI language: en (default) | fr
+
 # Features
 NEXT_PUBLIC_ENABLE_AUTH=false         # login / sign up
 NEXT_PUBLIC_ENABLE_COMMENTS=false     # episode comments + recent comments on home
@@ -45,6 +48,22 @@ upstream. New upstream components using `cyan-*`/`blue-*` are themed automatical
 | Brand from env (name, tagline, description, logo, icons) | `config.ts`, `src/app/manifest.ts` | `src/app/layout.tsx` (metadata, icons, manifest path → `/manifest.webmanifest`), `src/components/navbar.tsx`, `src/components/footer.tsx` (text + logo), `src/components/hero-section.tsx`, `src/app/anime/watch/video-player-section.tsx`, `src/app/profile/[username]/components/activity-progression.tsx` |
 | Disable login / sign up | `config.ts` (`AUTH_ENABLED`), `with-feature.tsx` | `src/components/login-popover-button.tsx` (export line), `src/components/comments/comments-section.tsx` (login prompt) |
 | Disable comments | `config.ts` (`COMMENTS_ENABLED`), `with-feature.tsx` | `src/components/comments/comments-section.tsx`, `src/components/recent-comments-section.tsx` (export lines) |
+| UI translation (`NEXT_PUBLIC_LANGUAGE`) | `i18n/index.ts` (`t`, `tMeta`, `LOCALE`), `i18n/fr.ts`, `player-options.ts` (ArtPlayer lang + brand colour) | One-line `t("…")` wraps in displayed strings across components; `import { t } from "@/fork/i18n"` per file; `<html lang>` in `src/app/layout.tsx`; `new Artplayer(withForkPlayerOptions(...))` in `src/components/miru-player.tsx` |
 | Genre-based Also Watch / Recommended (AniList) | `similar-anime.ts` | `src/app/anime/watch/layout.tsx` (hook + 2 carousel props), `src/app/anime/[slug]/page.tsx` ("You Might Also Like") |
 
 `public/manifest.json` is kept untouched; `src/app/manifest.ts` reads it and overrides the brand fields.
+
+## Translations
+
+`t("English text")` looks the string up in `src/fork/i18n/<lang>.ts`; missing
+keys fall back to English, so untranslated upstream strings still render.
+Wrap at the *display* point (e.g. `Select`, `AnimeCarousel`, `AnimeSections`
+translate their `title` / `label` props) so constant lists and callers need no
+changes. `tMeta()` also translates composed AniList values word by word
+(`SPRING 2024` → `Printemps 2024`). To add a language: create `i18n/<code>.ts`,
+register it in `DICTIONARIES` / `LOCALES` in `i18n/index.ts`, and (optionally)
+the ArtPlayer pack in `player-options.ts`.
+
+Not translated: AniList content (titles, synopses — AniList only provides
+English/Japanese) and the auth / comments / profile UI (disabled in this fork).
+

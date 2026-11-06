@@ -1,5 +1,6 @@
 "use client";
 
+import { t, tMeta } from "@/fork/i18n";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -66,7 +67,7 @@ const AnimeCard = ({
         <div className="absolute top-2.5 inset-x-2.5 z-20 flex items-center justify-between pointer-events-none">
           {props.format ? (
             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-black/60 text-indigo-300 backdrop-blur-md border border-white/10">
-              {props.format}
+              {tMeta(props.format)}
             </span>
           ) : <span />}
 
@@ -102,7 +103,7 @@ const AnimeCard = ({
             {props.watchDetail ? (
               <div className="mt-2 space-y-1">
                 <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
-                  <span>Ep {props.watchDetail.episodeNumber}</span>
+                  <span>{t("Ep {n}", { n: props.watchDetail.episodeNumber })}</span>
                   <span>{formatSecondsToMMSS(props.watchDetail.current)}</span>
                 </div>
                 <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
@@ -116,7 +117,7 @@ const AnimeCard = ({
               <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-slate-400">
                 {props.episodeCard && !!props.episodes && (
                   <span className="text-slate-300 font-semibold">
-                    {props.episodes} Episodes
+                    {t("{n} Episodes", { n: props.episodes })}
                   </span>
                 )}
               </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { t } from "@/fork/i18n";
+import { withForkPlayerOptions } from "@/fork/player-options";
 import React, {
   useEffect,
   useRef,
@@ -277,10 +279,10 @@ function MiruPlayer({
                 <div style="display: flex; align-items: center; gap: 4px; padding: 0 6px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/></svg>
-                    <span class="art-skip-text">Skip</span>
+                    <span class="art-skip-text">${t("Skip")}</span>
                 </div>
             `, // Icon + Text (use a class for text if needed)
-      tooltip: "Skip", // Initial tooltip
+      tooltip: t("Skip"), // Initial tooltip
       style: {
         display: "none", // Start hidden
         cursor: "pointer",
@@ -382,16 +384,16 @@ function MiruPlayer({
             control: true,
             setting: true,
             getName: (level: { height?: number; bitrate?: number }) =>
-              level.height ? `${level.height}P` : "Auto", // Type level
-            title: "Quality",
-            auto: "Auto",
+              level.height ? `${level.height}P` : t("Auto"), // Type level
+            title: t("Quality"),
+            auto: t("Auto"),
           },
           audio: {
             control: true,
             setting: true,
-            getName: (track: { name?: string }) => track.name ?? "Unknown", // Type track
-            title: "Audio",
-            auto: "Auto",
+            getName: (track: { name?: string }) => track.name ?? t("Unknown"), // Type track
+            title: t("Audio"),
+            auto: t("Auto"),
           },
         }),
         artplayerPluginAmbilight({
@@ -407,17 +409,17 @@ function MiruPlayer({
         // Configure settings panel items
         {
           width: 250,
-          html: "Subtitle",
-          tooltip: "Subtitle",
+          html: t("Subtitle"),
+          tooltip: t("Subtitle"),
           selector: [
             {
-              html: "Display",
-              tooltip: subOrDub === "sub" ? "Hide" : "Show", // Initial state based on prop
+              html: t("Display"),
+              tooltip: t(subOrDub === "sub" ? "Hide" : "Show"), // Initial state based on prop
               switch: subOrDub === "sub", // Switch is ON if sub
               onSwitch: function(item) {
                 const showSubtitle = !item.switch; // The new state
                 art.subtitle.show = showSubtitle;
-                item.tooltip = showSubtitle ? "Hide" : "Show";
+                item.tooltip = t(showSubtitle ? "Hide" : "Show");
                 console.log(`Subtitle display set to: ${showSubtitle}`);
                 return showSubtitle; // Return the new switch state
               },
@@ -430,9 +432,9 @@ function MiruPlayer({
               art.subtitle.switch(proxiedUrl, {
                 name: item.html,
               });
-              return item.html ?? "Subtitle";
+              return item.html ?? t("Subtitle");
             }
-            return item.html ?? "Subtitle";
+            return item.html ?? t("Subtitle");
           },
         },
       ],
@@ -441,12 +443,12 @@ function MiruPlayer({
         ...generateHighlights(
           episodeInfo?.intro?.start,
           episodeInfo?.intro?.end,
-          "Intro",
+          t("Intro"),
         ),
         ...generateHighlights(
           episodeInfo?.outro?.start,
           episodeInfo?.outro?.end,
-          "Outro",
+          t("Outro"),
         ),
       ],
       poster: animeInfo.image,
@@ -482,7 +484,7 @@ function MiruPlayer({
     };
 
     // --- Initialize ArtPlayer ---
-    const art = new Artplayer(finalOptions);
+    const art = new Artplayer(withForkPlayerOptions(finalOptions));
     artInstanceRef.current = art;
 
     // --- Skip Logic Handler ---
@@ -545,8 +547,8 @@ function MiruPlayer({
           const skipText = inIntro ? "Intro" : "Outro";
           // Update HTML text if needed (more complex, might need querySelector)
           const textElement = manualSkip.querySelector(".art-skip-text");
-          if (textElement && textElement.textContent !== `Skip ${skipText}`) {
-            textElement.textContent = `Skip ${skipText}`;
+          if (textElement && textElement.textContent !== t(`Skip ${skipText}`)) {
+            textElement.textContent = t(`Skip ${skipText}`);
           }
         } else {
           // Hide the button

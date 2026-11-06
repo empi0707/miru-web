@@ -6,6 +6,8 @@
  * rebuild after changing them.
  */
 
+import { t } from "./i18n";
+
 const env = (value: string | undefined, fallback: string) =>
   value && value.trim() ? value.trim() : fallback;
 
@@ -15,12 +17,12 @@ const env = (value: string | undefined, fallback: string) =>
 export const BRAND = env(process.env.NEXT_PUBLIC_BRAND, "Miru");
 
 /** Short slogan used in the default <title> and PWA name: "<BRAND> - <TAGLINE>". */
-export const BRAND_TAGLINE = env(process.env.NEXT_PUBLIC_BRAND_TAGLINE, "Stream Anime with No Ads");
+export const BRAND_TAGLINE = env(process.env.NEXT_PUBLIC_BRAND_TAGLINE, t("Stream Anime with No Ads"));
 
 /** Meta / Open Graph / PWA description. */
 export const BRAND_DESCRIPTION = env(
   process.env.NEXT_PUBLIC_BRAND_DESCRIPTION,
-  `Watch your favorite anime anywhere, anytime with ease and no ads on ${BRAND}.`,
+  t("Watch your favorite anime anywhere, anytime with ease and no ads on {brand}.", { brand: BRAND }),
 );
 
 /** Logo (navbar, footer, favicon, PWA icon). A path under /public, e.g. /brand/logo.svg. */
@@ -42,3 +44,4 @@ export const AUTH_ENABLED = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
 
 /** Comments (per-episode + recent comments on home). Disabled by default. */
 export const COMMENTS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_COMMENTS === "true";
+

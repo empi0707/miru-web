@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React from "react";
 import { CirclePlay } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
@@ -27,7 +28,7 @@ const WatchButton = () => {
       className="max-w-fit text-base"
       LeftIcon={CirclePlay}
     >
-      {hasWatchedAnime ? "Continue Watching" : "Start Watching"}
+      {t(hasWatchedAnime ? "Continue Watching" : "Start Watching")}
     </ButtonLink>
   );
 };

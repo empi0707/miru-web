@@ -1,3 +1,4 @@
+import { t } from "@/fork/i18n";
 import React from "react";
 import AnimeCard from "./anime-card";
 import { MediaList } from "@/types/miruro-api";
@@ -24,7 +25,7 @@ const FeaturedCollectionCard = (props: Props) => {
       <div className="flex items-center gap-2 mb-2">
         <Sparkles className="h-4 w-4 text-indigo-400 shrink-0" />
         <h3 className="text-base sm:text-lg font-bold text-white tracking-wide text-center">
-          {props.title}
+          {t(props.title)}
         </h3>
       </div>
 

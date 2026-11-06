@@ -2,6 +2,7 @@
 import type { MetadataRoute } from "next";
 import manifest from "../../public/manifest.json";
 import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_LOGO } from "@/fork/config";
+import { LANGUAGE } from "@/fork/i18n";
 
 const DEFAULT_LOGO = "/miru-logo.svg";
 
@@ -14,6 +15,7 @@ export default function buildManifest(): MetadataRoute.Manifest {
     ...base,
     name: `${BRAND} - ${BRAND_TAGLINE}`,
     short_name: BRAND,
+    lang: LANGUAGE,
     description: BRAND_DESCRIPTION,
     icons: (base.icons || []).map((icon) =>
       icon.src === DEFAULT_LOGO ? { ...icon, src: BRAND_LOGO, type: iconType(BRAND_LOGO) } : icon,

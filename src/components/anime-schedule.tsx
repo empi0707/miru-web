@@ -1,5 +1,6 @@
 "use client";
 
+import { t, LOCALE } from "@/fork/i18n";
 import React, { useMemo, useState } from "react";
 import Container from "./container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
@@ -62,7 +63,7 @@ function AnimeSchedule() {
         <div className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-indigo-400" />
           <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            Airing Schedule
+            {t("Airing Schedule")}
           </h2>
         </div>
       </div>
@@ -87,10 +88,10 @@ function AnimeSchedule() {
               >
                 <div className="flex flex-col items-start">
                   <span className="font-bold text-xs uppercase tracking-wider">
-                    {day}
+                    {t(day)}
                   </span>
                   <span className="text-[10px] opacity-75">
-                    {dateObj.toLocaleDateString("en-US", {
+                    {dateObj.toLocaleDateString(LOCALE, {
                       month: "short",
                       day: "numeric",
                     })}
@@ -98,7 +99,7 @@ function AnimeSchedule() {
                 </div>
                 {isToday && (
                   <span className="px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[9px] font-bold">
-                    TODAY
+                    {t("TODAY")}
                   </span>
                 )}
               </TabsTrigger>
@@ -119,7 +120,7 @@ function AnimeSchedule() {
                       {data.scheduledAnimes.map((anime, idx) => {
                         const timeFormatted = new Date(
                           anime.airingTimestamp,
-                        ).toLocaleTimeString("en-US", {
+                        ).toLocaleTimeString(LOCALE, {
                           hour: "numeric",
                           minute: "2-digit",
                           hour12: true,
@@ -161,14 +162,14 @@ function AnimeSchedule() {
 
                               <div className="flex items-center justify-between gap-2 mt-2">
                                 <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-                                  Ep {anime.episode}
+                                  {t("Ep {n}", { n: anime.episode })}
                                 </span>
                                 <Link href={`${ROUTES.ANIME_DETAILS}/${anime.id}`}>
                                   <Button
                                     size="sm"
                                     className="h-7 text-xs bg-slate-800 hover:bg-indigo-600 text-white px-3 rounded-lg flex items-center gap-1.5 transition-all duration-200 font-semibold"
                                   >
-                                    <Play className="h-3 w-3 fill-current" /> Details
+                                    <Play className="h-3 w-3 fill-current" /> {t("Details")}
                                   </Button>
                                 </Link>
                               </div>
@@ -181,10 +182,10 @@ function AnimeSchedule() {
                     <div className="flex flex-col items-center justify-center min-h-[220px] rounded-2xl bg-[#0d121d] border border-white/5 p-8 text-center">
                       <Clock className="h-8 w-8 text-slate-500 mb-2 opacity-60" />
                       <p className="text-sm font-semibold text-slate-300">
-                        No scheduled anime for this day
+                        {t("No scheduled anime for this day")}
                       </p>
                       <p className="text-xs text-slate-500 mt-1">
-                        Check back later or browse other days of the week.
+                        {t("Check back later or browse other days of the week.")}
                       </p>
                     </div>
                   ))}

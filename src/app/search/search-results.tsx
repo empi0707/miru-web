@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React from "react";
 import { ROUTES } from "@/constants/routes";
 import AnimeCard from "@/components/anime-card";
@@ -126,7 +127,7 @@ const SearchResults = () => {
       <div className="glass-panel rounded-2xl p-6 border border-white/10 shadow-xl flex flex-col gap-6">
         <div className="flex items-center gap-2.5">
           <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-cyan-400 to-blue-600 shadow-sm shadow-cyan-500/50" />
-          <p className="text-lg font-bold text-white tracking-wide">Refine Catalog</p>
+          <p className="text-lg font-bold text-white tracking-wide">{t("Refine Catalog")}</p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Select
@@ -167,7 +168,7 @@ const SearchResults = () => {
           />
         </div>
         <div>
-          <p className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">Genres</p>
+          <p className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">{t("Genres")}</p>
           <ToggleGroup
             type="multiple"
             className="flex flex-wrap justify-start gap-2"
@@ -189,7 +190,7 @@ const SearchResults = () => {
                     : "text-slate-300",
                 )}
               >
-                {genre.label}
+                {t(genre.label)}
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
@@ -200,7 +201,7 @@ const SearchResults = () => {
             className="px-6 h-9 rounded-xl font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/25 transition-all"
             onClick={applyFilters}
           >
-            Apply Filters
+            {t("Apply Filters")}
           </Button>
           <Button
             size="sm"
@@ -208,17 +209,17 @@ const SearchResults = () => {
             onClick={resetFilters}
             variant="link"
           >
-            Reset
+            {t("Reset")}
           </Button>
         </div>
       </div>
       <div className="flex items-center gap-2.5 text-2xl font-bold text-white">
         <span className="w-1.5 h-6 rounded-full bg-gradient-to-b from-cyan-400 to-blue-600 shadow-sm shadow-cyan-500/50" />
         {displayPhrase === "" ? (
-          "Catalog Results"
+          t("Catalog Results")
         ) : (
           <>
-            Results for <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">&quot;{displayPhrase}&quot;</span>
+            {t("Results for")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">&quot;{displayPhrase}&quot;</span>
           </>
         )}
       </div>
@@ -250,9 +251,9 @@ const SearchResults = () => {
       </div>
       {!isLoading && searchResults && searchResults.animes.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center gap-3 w-full">
-          <p className="text-xl font-bold text-white">No results found</p>
+          <p className="text-xl font-bold text-white">{t("No results found")}</p>
           <p className="text-sm text-slate-400">
-            Try adjusting your search query or removing some filters.
+            {t("Try adjusting your search query or removing some filters.")}
           </p>
         </div>
       )}

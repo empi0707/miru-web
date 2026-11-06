@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import EpisodeCard from "./common/episode-card";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -144,7 +145,7 @@ const EpisodePlaylist = ({
             <ListFilter className="h-4 w-4 text-cyan-400 shrink-0" />
             <div className="min-w-0">
               <h3 className="text-sm font-bold text-white tracking-wide">
-                Episode Playlist
+                {t("Episode Playlist")}
               </h3>
               {title && (
                 <p className="text-[11px] text-slate-400 truncate max-w-[180px]">
@@ -154,7 +155,7 @@ const EpisodePlaylist = ({
             </div>
           </div>
           <span className="text-[11px] font-semibold text-slate-400 bg-white/5 px-2 py-0.5 rounded-md border border-white/5 shrink-0">
-            {episodes.totalEpisodes} Total
+            {t("{n} Total", { n: episodes.totalEpisodes })}
           </span>
         </div>
 
@@ -162,7 +163,7 @@ const EpisodePlaylist = ({
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
             <Input
-              placeholder="Search Ep #"
+              placeholder={t("Search Ep #")}
               value={search}
               onChange={handleOnSearchChange}
               className="h-8 pl-8 text-xs bg-slate-950/60 border-white/10 rounded-xl placeholder:text-slate-500"
@@ -203,7 +204,7 @@ const EpisodePlaylist = ({
 
         {!filteredEpisodes?.length && !isLoading && (
           <div className="text-center text-xs text-slate-400 py-8">
-            No matching episodes found.
+            {t("No matching episodes found.")}
           </div>
         )}
 

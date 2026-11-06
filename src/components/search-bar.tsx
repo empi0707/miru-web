@@ -1,3 +1,4 @@
+import { t } from "@/fork/i18n";
 import React, { useState, useRef } from "react";
 import { Input } from "./ui/input";
 import { SearchIcon, SlidersHorizontal, ArrowRight } from "lucide-react";
@@ -64,7 +65,7 @@ const SearchBar = ({
         />
         <Input
           className="w-full h-10 pl-10 pr-10 text-sm text-white bg-[#0d121d]/90 border-white/10 rounded-xl focus-visible:ring-1 focus-visible:ring-indigo-500 placeholder:text-slate-500 shadow-inner"
-          placeholder="Search anime, movies, genres..."
+          placeholder={t("Search anime, movies, genres...")}
           onChange={(e) => setSearchValue(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={handleBlur}
@@ -78,7 +79,7 @@ const SearchBar = ({
           onClick={() => {
             router.push(ROUTES.SEARCH + '?q=""');
           }}
-          title="Filter and Catalog"
+          title={t("Filter and Catalog")}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
         </Button>
@@ -91,13 +92,13 @@ const SearchBar = ({
         >
           {isLoading && (
             <div className="p-4 text-center text-xs text-slate-400">
-              Searching anime...
+              {t("Searching anime...")}
             </div>
           )}
 
           {!isLoading && (!searchResults || searchResults.length === 0) && (
             <div className="p-4 text-center text-xs text-slate-400">
-              No results found for &ldquo;{searchValue}&rdquo;
+              {t("No results found for “{query}”", { query: searchValue })}
             </div>
           )}
 
@@ -143,7 +144,7 @@ const SearchBar = ({
               className="mt-1"
             >
               <Button className="w-full h-8 text-xs font-bold rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:from-indigo-600 hover:to-violet-700 transition-all flex items-center justify-center gap-1.5">
-                <span>View All Results</span>
+                <span>{t("View All Results")}</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Button>
             </Link>

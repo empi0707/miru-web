@@ -1,5 +1,6 @@
 "use client";
 
+import { t, tMeta } from "@/fork/i18n";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import parse from "html-react-parser";
@@ -97,7 +98,7 @@ const Page = () => {
     } catch (error) {
       console.log(error);
       setSelected(previousSelected);
-      toast.error("Error adding to list", { style: { background: "red" } });
+      toast.error(t("Error adding to list"), { style: { background: "red" } });
     }
   };
 
@@ -149,7 +150,7 @@ const Page = () => {
           <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-4 pb-2">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
               <span className="px-2.5 py-0.5 rounded-md text-xs font-bold uppercase bg-violet-600/80 text-white shadow-sm">
-                {anime.anime.info.stats.type || "ANIME"}
+                {tMeta(anime.anime.info.stats.type || "ANIME")}
               </span>
               {anime.anime.info.stats.rating && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
@@ -158,7 +159,7 @@ const Page = () => {
                 </span>
               )}
               <span className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-white/5 border border-white/10 text-slate-300">
-                {anime.anime.moreInfo.status}
+                {tMeta(anime.anime.moreInfo.status)}
               </span>
             </div>
 
@@ -176,7 +177,7 @@ const Page = () => {
               <WatchButton />
               {auth && (
                 <Select
-                  placeholder="Add to list"
+                  placeholder={t("Add to list")}
                   value={bookmarks?.[0]?.status || selected}
                   options={SelectOptions}
                   onChange={handleSelect}
@@ -194,20 +195,20 @@ const Page = () => {
               value="overview"
               className="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-violet-600 data-[state=active]:text-white transition-all"
             >
-              Overview
+              {t("Overview")}
             </TabsTrigger>
             <TabsTrigger
               value="episodes"
               className="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-violet-600 data-[state=active]:text-white transition-all"
             >
-              Episodes
+              {t("Episodes")}
             </TabsTrigger>
             {anime.anime.info.charactersVoiceActors.length > 0 && (
               <TabsTrigger
                 value="characters"
                 className="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-violet-600 data-[state=active]:text-white transition-all"
               >
-                Characters
+                {t("Characters")}
               </TabsTrigger>
             )}
             {anime.seasons.length > 0 && (
@@ -215,7 +216,7 @@ const Page = () => {
                 value="relations"
                 className="px-5 py-2 rounded-xl text-sm font-bold text-slate-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-violet-600 data-[state=active]:text-white transition-all"
               >
-                Relations
+                {t("Relations")}
               </TabsTrigger>
             )}
           </TabsList>
@@ -229,42 +230,42 @@ const Page = () => {
             <div className="lg:col-span-1 p-6 rounded-2xl bg-[#0d121d] border border-white/10 space-y-4 shadow-xl">
               <h3 className="text-base font-extrabold text-white tracking-wide border-b border-white/10 pb-3 flex items-center gap-2">
                 <Film className="h-4 w-4 text-indigo-400" />
-                Information
+                {t("Information")}
               </h3>
               <div className="space-y-3 text-xs sm:text-sm">
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-slate-400">Aired</span>
+                  <span className="text-slate-400">{t("Aired")}</span>
                   <span className="text-white font-medium">{anime.anime.moreInfo.aired}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-slate-400">Premiered</span>
-                  <span className="text-white font-medium">{anime.anime.moreInfo.premiered}</span>
+                  <span className="text-slate-400">{t("Premiered")}</span>
+                  <span className="text-white font-medium">{tMeta(anime.anime.moreInfo.premiered)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-slate-400">Duration</span>
+                  <span className="text-slate-400">{t("Duration")}</span>
                   <span className="text-white font-medium">{anime.anime.moreInfo.duration}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-slate-400">Status</span>
-                  <span className="text-white font-medium">{anime.anime.moreInfo.status}</span>
+                  <span className="text-slate-400">{t("Status")}</span>
+                  <span className="text-white font-medium">{tMeta(anime.anime.moreInfo.status)}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-slate-400">Score</span>
+                  <span className="text-slate-400">{t("Score")}</span>
                   <span className="text-amber-300 font-bold">{anime.anime.info.stats.rating}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/5">
-                  <span className="text-slate-400">Studios</span>
+                  <span className="text-slate-400">{t("Studios")}</span>
                   <span className="text-white font-medium">{anime.anime.moreInfo.studios}</span>
                 </div>
                 <div className="flex flex-col gap-1.5 pt-2">
-                  <span className="text-slate-400">Genres</span>
+                  <span className="text-slate-400">{t("Genres")}</span>
                   <div className="flex flex-wrap gap-1.5">
                     {anime.anime.moreInfo.genres.map((g) => (
                       <span
                         key={g}
                         className="px-2 py-0.5 rounded-md text-xs bg-white/5 border border-white/10 text-slate-300 font-medium"
                       >
-                        {g}
+                        {t(g)}
                       </span>
                     ))}
                   </div>
@@ -275,10 +276,10 @@ const Page = () => {
             {/* Right: Synopsis */}
             <div className="lg:col-span-2 p-6 rounded-2xl bg-[#0d121d] border border-white/10 space-y-4 shadow-xl">
               <h3 className="text-base font-extrabold text-white tracking-wide border-b border-white/10 pb-3">
-                Synopsis
+                {t("Synopsis")}
               </h3>
               <div className="text-sm md:text-base leading-relaxed text-slate-300 space-y-3">
-                {parse(anime.anime.info.description || "No synopsis available.")}
+                {parse(anime.anime.info.description || t("No synopsis available."))}
               </div>
             </div>
           </TabsContent>
@@ -286,7 +287,7 @@ const Page = () => {
           {/* Relations Tab */}
           <TabsContent value="relations" className="w-full mt-6 space-y-4">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Layers className="h-4 w-4 text-indigo-400" /> Related Series
+              <Layers className="h-4 w-4 text-indigo-400" /> {t("Related Series")}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {anime.seasons.map((relation, idx) => (
@@ -294,7 +295,7 @@ const Page = () => {
                   <AnimeCard
                     key={idx}
                     title={relation.name}
-                    subTitle={relation.title}
+                    subTitle={tMeta(relation.title)}
                     poster={relation.poster}
                     href={`${ROUTES.ANIME_DETAILS}/${relation.id}`}
                   />
@@ -311,7 +312,7 @@ const Page = () => {
           {/* Characters Tab */}
           {!!anime.anime.info.charactersVoiceActors.length && (
             <TabsContent value="characters" className="w-full mt-6 space-y-4">
-              <h3 className="text-lg font-bold text-white">Characters & Voice Cast</h3>
+              <h3 className="text-lg font-bold text-white">{t("Characters & Voice Cast")}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {anime.anime.info.charactersVoiceActors.map((character, idx) => (
                   <CharacterCard
@@ -329,7 +330,7 @@ const Page = () => {
         {!!similar?.recommended.length && (
           <AnimeCarousel
             anime={similar.recommended as IAnime[]}
-            title="You Might Also Like"
+            title={t("You Might Also Like")}
             className="pt-10"
           />
         )}

@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React from "react";
 import AnimeCard from "./anime-card";
 import { IAnime } from "@/types/anime";
@@ -29,7 +30,7 @@ const AnimeCarousel = (props: Props) => {
       <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="w-1.5 h-6 rounded-full bg-gradient-to-b from-cyan-400 to-blue-600 shadow-sm shadow-cyan-500/50" />
-          <h5 className="text-xl md:text-2xl font-bold text-white tracking-wide">{props.title}</h5>
+          <h5 className="text-xl md:text-2xl font-bold text-white tracking-wide">{t(props.title)}</h5>
         </div>
         <div className="flex items-center gap-2">
           <Button

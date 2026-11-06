@@ -1,5 +1,6 @@
 "use client";
 
+import { t, tMeta } from "@/fork/i18n";
 import Loading from "@/app/loading";
 import parse from "html-react-parser";
 import { ROUTES } from "@/constants/routes";
@@ -125,7 +126,7 @@ const Layout = (props: Props) => {
     } catch (error) {
       console.log(error);
       setSelected(previousSelected);
-      toast.error("Error adding to list", { style: { background: "red" } });
+      toast.error(t("Error adding to list"), { style: { background: "red" } });
     }
   };
 
@@ -193,7 +194,7 @@ const Layout = (props: Props) => {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-cyan-400 to-blue-600 shadow-sm shadow-cyan-500/50" />
                 <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">
-                  {anime?.anime.info.stats.type || "ANIME"}
+                  {tMeta(anime?.anime.info.stats.type || "ANIME")}
                 </span>
                 {anime?.anime.info.stats.rating && (
                   <span className="text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
@@ -202,12 +203,12 @@ const Layout = (props: Props) => {
                 )}
                 {anime?.anime.moreInfo.status && (
                   <span className="text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">
-                    {anime.anime.moreInfo.status}
+                    {tMeta(anime.anime.moreInfo.status)}
                   </span>
                 )}
               </div>
               <Select
-                placeholder="Add to list"
+                placeholder={t("Add to list")}
                 value={selected}
                 options={SelectOptions}
                 onChange={handleSelect}

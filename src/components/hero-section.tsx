@@ -1,5 +1,6 @@
 "use client";
 
+import { t, tMeta } from "@/fork/i18n";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -72,7 +73,7 @@ const HeroSection = ({ spotlightAnime, isDataLoading }: IHeroSectionProps) => {
                   ? "ring-2 ring-indigo-400 scale-105 opacity-100"
                   : "opacity-45 hover:opacity-80 scale-95"
                   }`}
-                aria-label={`Jump to ${anime.title?.english || anime.title?.romaji}`}
+                aria-label={t("Jump to {title}", { title: anime.title?.english || anime.title?.romaji })}
               >
                 <Image
                   src={thumb}
@@ -93,7 +94,7 @@ const HeroSection = ({ spotlightAnime, isDataLoading }: IHeroSectionProps) => {
             size="icon"
             onClick={() => api?.scrollPrev()}
             className="h-10 w-10 rounded-full bg-slate-900/80 border border-white/15 text-white backdrop-blur-md hover:bg-indigo-600 hover:border-indigo-500 transition-all shadow-lg"
-            aria-label="Previous Spotlight"
+            aria-label={t("Previous Spotlight")}
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
@@ -101,7 +102,7 @@ const HeroSection = ({ spotlightAnime, isDataLoading }: IHeroSectionProps) => {
             size="icon"
             onClick={() => api?.scrollNext()}
             className="h-10 w-10 rounded-full bg-slate-900/80 border border-white/15 text-white backdrop-blur-md hover:bg-indigo-600 hover:border-indigo-500 transition-all shadow-lg"
-            aria-label="Next Spotlight"
+            aria-label={t("Next Spotlight")}
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
@@ -131,7 +132,7 @@ const HeroCanvasItem = ({
 
   const cleanDescription = (anime as any).description
     ? (anime as any).description.replace(/<[^>]*>?/gm, "").trim()
-    : `Stream this breathtaking title on ${BRAND} with zero ad interruptions and crisp playback.`;
+    : t("Stream this breathtaking title on {brand} with zero ad interruptions and crisp playback.", { brand: BRAND });
 
   return (
     <div className="relative w-full h-[85vh] min-h-[580px] max-h-[860px] overflow-hidden">
@@ -170,7 +171,7 @@ const HeroCanvasItem = ({
             <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-300 pt-1">
               {anime.format && (
                 <span className="px-2.5 py-0.5 rounded-md font-bold tracking-wider bg-violet-600/80 text-white shadow-sm">
-                  {anime.format}
+                  {tMeta(anime.format)}
                 </span>
               )}
               {!!anime.averageScore && (
@@ -181,7 +182,7 @@ const HeroCanvasItem = ({
               )}
               {anime.seasonYear && (
                 <span className="px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300">
-                  {anime.season ? `${anime.season} ` : ""}{anime.seasonYear}
+                  {anime.season ? `${tMeta(anime.season)} ` : ""}{anime.seasonYear}
                 </span>
               )}
               <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-bold text-[10px]">
@@ -189,7 +190,7 @@ const HeroCanvasItem = ({
               </span>
               {anime.genres?.slice(0, 3).map((g) => (
                 <span key={g} className="text-slate-400 font-medium">
-                  • {g}
+                  • {t(g)}
                 </span>
               ))}
             </div>
@@ -206,7 +207,7 @@ const HeroCanvasItem = ({
                 className="inline-flex items-center gap-2.5 px-7 py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 text-white font-bold text-sm shadow-xl shadow-indigo-600/30 hover:shadow-indigo-500/50 hover:scale-105 active:scale-95 transition-all duration-200"
               >
                 <Play className="h-4 w-4 fill-white" />
-                <span>Watch Now</span>
+                <span>{t("Watch Now")}</span>
               </Link>
 
               <Link
@@ -214,7 +215,7 @@ const HeroCanvasItem = ({
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm backdrop-blur-md border border-white/10 transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 <Info className="h-4 w-4 text-slate-300" />
-                <span>Details</span>
+                <span>{t("Details")}</span>
               </Link>
             </div>
           </div>

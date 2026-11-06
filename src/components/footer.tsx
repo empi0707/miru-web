@@ -1,3 +1,4 @@
+import { t } from "@/fork/i18n";
 import React from "react";
 import Image from "next/image";
 import { BRAND, BRAND_LOGO } from "@/fork/config";
@@ -18,10 +19,9 @@ const Footer = () => {
         </span>
       </div>
       <p className="text-xs text-gray-400 text-center max-w-xl">
-        {BRAND} does not store any files on the server; it only displays metadata
-        and links to media hosted on 3rd party services.
+        {t("{brand} does not store any files on the server; it only displays metadata and links to media hosted on 3rd party services.", { brand: BRAND })}
       </p>
-      <p className="text-xs text-gray-500">&copy; {new Date().getFullYear()} {BRAND}. All rights reserved.</p>
+      <p className="text-xs text-gray-500">&copy; {new Date().getFullYear()} {BRAND}. {t("All rights reserved.")}</p>
     </footer>
   );
 };

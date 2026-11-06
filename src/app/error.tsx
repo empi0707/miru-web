@@ -1,5 +1,6 @@
 "use client"; // Error components must be Client Components
 
+import { t } from "@/fork/i18n";
 import Image from "next/image";
 import { useEffect } from "react";
 import ErrorImage from "@/assets/error.gif";
@@ -29,11 +30,11 @@ export default function Error({
           height={300}
           className=""
         />
-        <p className="font-bold text-2xl">Something went wrong!</p>
+        <p className="font-bold text-2xl">{t("Something went wrong!")}</p>
         <div className="flex gap-3 items-center">
-          <ButtonLink href={ROUTES.HOME}>Back to Home</ButtonLink>
+          <ButtonLink href={ROUTES.HOME}>{t("Back to Home")}</ButtonLink>
           <Button onClick={() => reset()} className="" variant={"secondary"}>
-            Reload
+            {t("Reload")}
           </Button>
         </div>
       </div>
