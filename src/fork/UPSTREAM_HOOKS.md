@@ -21,9 +21,9 @@ Rebase surfaces conflicts one commit at a time, which is easier than a merge.
 
 **Changes:**
 
-1. Update the fork config import to include `BRAND_ICON`:
+1. Update the fork config import to include `BRAND_ICON` (remove `BRAND_LOGO` — no longer used here):
 ```ts
-import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_LOGO, BRAND_ICON, BRAND_APPLE_ICON } from "@/fork/config";
+import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_ICON, BRAND_APPLE_ICON } from "@/fork/config";
 ```
 
 2. In the `metadata` object, change `icons.icon` from `BRAND_LOGO` to `BRAND_ICON`:
