@@ -58,6 +58,9 @@ const MEDIA_FIELDS = `
   }
 `;
 
+const isNotChinese = (item: { countryOfOrigin?: string }) =>
+  item.countryOfOrigin !== "CN";
+
 export async function fetchAniListGraphQL<T = any>(
   query: string,
   variables: Record<string, any> = {},
@@ -113,7 +116,7 @@ export async function getAniListPopular(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult),
+    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
   };
 }
 
@@ -147,7 +150,7 @@ export async function getAniListTrending(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult),
+    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
   };
 }
 
@@ -181,7 +184,7 @@ export async function getAniListUpcoming(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult),
+    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
   };
 }
 
@@ -215,7 +218,7 @@ export async function getAniListRecent(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult),
+    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
   };
 }
 
@@ -232,7 +235,7 @@ export async function getAniListSpotlight(): Promise<MediaList[]> {
 
   const data = await fetchAniListGraphQL(query);
   const results = (data.Page?.media || []) as MediaList[];
-  return results.filter((item) => !item.isAdult && item.bannerImage);
+  return results.filter((item) => !item.isAdult && isNotChinese(item) && item.bannerImage);
 }
 
 export async function getAniListAnimeDetails(animeId: string): Promise<IAnimeDetails> {
@@ -573,7 +576,7 @@ export async function getAniListAnimeRelations(
   const edges = data.Media?.relations?.edges || [];
   return edges
     .map((e: any) => e.node as MediaList)
-    .filter((item: MediaList) => item && !item.isAdult);
+    .filter((item: MediaList) => item && !item.isAdult && isNotChinese(item));
 }
 
 const SORT_MAPPING: Record<string, string[]> = {
@@ -746,7 +749,7 @@ export async function getAniListSearchResults(
   const pageInfo = data.Page?.pageInfo;
   const countCheck = data.countCheck?.pageInfo;
   const results = (data.Page?.media || []) as MediaList[];
-  const filtered = results.filter((m) => !m.isAdult);
+  const filtered = results.filter((m) => !m.isAdult && isNotChinese(m));
 
   const currentPage = pageInfo?.currentPage || params.page || 1;
   const hasNextPage = Boolean(pageInfo?.hasNextPage);
@@ -790,6 +793,7 @@ export async function getAniListSearchSuggestions(
       Page(page: 1, perPage: 8) {
         media(search: $search, type: ANIME, isAdult: false) {
           id
+          countryOfOrigin
           title {
             english
             romaji
@@ -811,7 +815,7 @@ export async function getAniListSearchSuggestions(
   `;
 
   const data = await fetchAniListGraphQL(query, { search: q.trim() });
-  const items = data.Page?.media || [];
+  const items = (data.Page?.media || []).filter((item: any) => item.countryOfOrigin !== "CN");
 
   return items.map((item: any) => ({
     id: String(item.id),
