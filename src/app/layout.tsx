@@ -13,6 +13,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_LOGO, BRAND_APPLE_ICON } from "@/fork/config";
 import BrandStyle from "@/fork/brand-style";
+import { BrandOverrideProvider } from "@/fork/brand-override";
+import AdsLoader from "@/fork/ads-loader";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -89,19 +91,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.className} antialiased max-w-[100vw] overflow-x-hidden`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryProvider>
-            <NavBar />
-            {children}
-            <Footer />
-          </QueryProvider>
-        </ThemeProvider>
-        <Toaster />
+        <BrandOverrideProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <QueryProvider>
+              <NavBar />
+              {children}
+              <Footer />
+            </QueryProvider>
+          </ThemeProvider>
+          <Toaster />
+          <AdsLoader />
+        </BrandOverrideProvider>
       </body>
     </html>
   );

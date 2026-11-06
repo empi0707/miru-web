@@ -20,11 +20,12 @@ import { useAuthStore } from "@/store/auth-store";
 import { pb } from "@/lib/pocketbase";
 import NavbarAvatar from "./navbar-avatar";
 import { toast } from "sonner";
-import { BRAND, BRAND_LOGO } from "@/fork/config";
+import { useBrandOverride } from "@/fork/brand-override";
 
 const menuItems: Array<{ title: string; href?: string }> = [];
 
 const NavBar = () => {
+  const { brand, logo, isExternalLogo } = useBrandOverride();
   const auth = useAuthStore();
   const { y } = useScrollPosition();
   const isHeaderFixed = true;
@@ -79,20 +80,31 @@ const NavBar = () => {
           href={ROUTES.HOME}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <Image
-            src={BRAND_LOGO}
-            alt={`${BRAND} logo`}
-            width={40}
-            height={40}
-            className="rounded-xl shadow-lg transition-transform group-hover:scale-105"
-          />
+          {isExternalLogo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={logo}
+              alt={`${brand} logo`}
+              width={40}
+              height={40}
+              className="rounded-xl shadow-lg transition-transform group-hover:scale-105"
+            />
+          ) : (
+            <Image
+              src={logo}
+              alt={`${brand} logo`}
+              width={40}
+              height={40}
+              className="rounded-xl shadow-lg transition-transform group-hover:scale-105"
+            />
+          )}
           <h1
             className={cn([
               nightTokyo.className,
               "text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-500 to-cyan-400 tracking-widest",
             ])}
           >
-            {BRAND}
+            {brand}
           </h1>
         </Link>
 
