@@ -1,20 +1,10 @@
 import React from "react";
-import Image from "next/image";
+import { Loader2 } from "lucide-react";
 
 const Loading = () => {
   return (
     <div className="h-screen w-screen flex items-center justify-center">
-      <div className="h-[10.25rem] w-auto">
-        <Image
-          src="/loader.gif"
-          height={100}
-          width={100}
-          unoptimized
-          alt="loader"
-          className="h-full w-full object-cover"
-          suppressHydrationWarning
-        />
-      </div>
+      <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
     </div>
   );
 };

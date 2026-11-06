@@ -15,14 +15,13 @@ import Hls from "hls.js";
 
 // Helper functions and types (keep or import from your types file)
 import { IEpisodeServers, IEpisodeSource, IEpisodes } from "@/types/episodes"; // Adjust path as needed
-import loadingImage from "@/assets/genkai.gif"; // Adjust path as needed
 import artplayerPluginHlsControl from "artplayer-plugin-hls-control";
 import artplayerPluginAmbilight from "artplayer-plugin-ambilight";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth-store";
 import useBookMarks from "@/hooks/use-get-bookmark";
 import { pb } from "@/lib/pocketbase";
-import Image from "next/image";
+import { Loader2 } from "lucide-react";
 
 const WATCH_PROGRESS_UPDATE_INTERVAL = 10000; // Update every 10 seconds
 const WATCH_PROGRESS_MIN_WATCH_TIME = 10; // Min seconds watched to create record
@@ -479,7 +478,7 @@ function MiruPlayer({
       moreVideoAttr: { crossOrigin: "anonymous" },
       subtitle: subtitleConfig,
       icons: {
-        loading: `<img width="60" height="60" src="${loadingImage.src}">`,
+        loading: `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"/><circle cx="24" cy="24" r="18" fill="none" stroke="#22d3ee" stroke-width="4" stroke-linecap="round" stroke-dasharray="28 86"><animateTransform attributeName="transform" type="rotate" values="0 24 24;360 24 24" dur="0.75s" repeatCount="indefinite"/></circle></svg>`,
       },
     };
 
@@ -793,12 +792,7 @@ function MiruPlayer({
             className="w-full h-full flex items-center justify-center bg-cover bg-center"
             style={{ backgroundImage: `url(${animeInfo.image})` }}
           >
-            <Image
-              width="60"
-              height="60"
-              src={loadingImage.src}
-              alt="Loading..."
-            />
+            <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
           </div>
         )}
       </div>

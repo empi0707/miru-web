@@ -11,7 +11,10 @@ import type { AnimeMeta, EmbedCategory, EmbedPlayer, EmbedProvider } from "../ty
 import { cached, decodeHtml, fetchText, HOUR, isHttpUrl, siteBase, stripTags } from "../http";
 import { looseTitle, searchQueries, stripSeason, titleSimilarity, titleVariants, yearScore } from "../matching";
 
-const BASE = siteBase(process.env.FRENCH_MANGA_URL, "https://w16.french-manga.net");
+/** Undefined when FRENCH_MANGA_URL is not set → provider is disabled. */
+const BASE = process.env.FRENCH_MANGA_URL?.trim()
+  ? siteBase(process.env.FRENCH_MANGA_URL, "")
+  : undefined;
 
 interface Card {
   id: string;
@@ -119,6 +122,7 @@ export const frenchManga: EmbedProvider = {
   id: "french-manga",
   name: "French Manga",
   async players(meta, episode) {
+    if (!BASE) return [];
     const seen = new Set<string>();
     const cards: Card[] = [];
     for (const query of searchQueries(meta)) {

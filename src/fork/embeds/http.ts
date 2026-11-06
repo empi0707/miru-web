@@ -1,4 +1,6 @@
 /** Fork-only: server-side HTTP + in-memory cache for the embed scrapers. */
+import axios from "axios";
+import { getProxyConfig, rotateProxy } from "./proxy";
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
@@ -11,16 +13,52 @@ export class HttpError extends Error {
 
 export async function fetchText(
   url: string,
-  init: { method?: "GET" | "POST"; form?: Record<string, string>; headers?: Record<string, string> } = {},
+  init: { method?: "GET" | "POST"; form?: Record<string, string>; headers?: Record<string, string>; proxy?: boolean } = {},
 ): Promise<string> {
+  const commonHeaders = {
+    "User-Agent": USER_AGENT,
+    "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.6",
+    ...(init.form ? { "Content-Type": "application/x-www-form-urlencoded" } : {}),
+    ...init.headers,
+  };
+
+  if (init.proxy) {
+    const proxyConfig = await getProxyConfig();
+    if (proxyConfig) {
+      const attempt = async () => {
+        const r = await axios.request<string>({
+          url,
+          method: init.form ? "post" : "get",
+          data: init.form ? new URLSearchParams(init.form).toString() : undefined,
+          headers: commonHeaders,
+          proxy: proxyConfig,
+          timeout: 20_000,
+          responseType: "text",
+          maxRedirects: 5,
+        });
+        return r.data;
+      };
+      try {
+        return await attempt();
+      } catch (e: unknown) {
+        const status = (e as { response?: { status?: number } })?.response?.status;
+        // On Cloudflare block: rotate IP and retry once.
+        if (status === 403 || status === 503) {
+          await rotateProxy();
+          try { return await attempt(); } catch (e2: unknown) {
+            const s2 = (e2 as { response?: { status?: number } })?.response?.status;
+            throw new HttpError(s2 ?? status, url);
+          }
+        }
+        if (status) throw new HttpError(status, url);
+        throw e;
+      }
+    }
+  }
+
   const res = await fetch(url, {
     method: init.method || (init.form ? "POST" : "GET"),
-    headers: {
-      "User-Agent": USER_AGENT,
-      "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.6",
-      ...(init.form ? { "Content-Type": "application/x-www-form-urlencoded" } : {}),
-      ...init.headers,
-    },
+    headers: commonHeaders,
     body: init.form ? new URLSearchParams(init.form).toString() : undefined,
     signal: AbortSignal.timeout(10_000),
     cache: "no-store",

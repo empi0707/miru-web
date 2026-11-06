@@ -14,7 +14,10 @@ import type { AnimeMeta, EmbedCategory, EmbedPlayer, EmbedProvider } from "../ty
 import { cached, fetchText, HOUR, HttpError, hostLabel, isHttpUrl, siteBase, stripTags } from "../http";
 import { sameTitle, searchQueries, titleVariants } from "../matching";
 
-const BASE = siteBase(process.env.ANIME_SAMA_URL, "https://anime-sama.to");
+/** Undefined when ANIME_SAMA_URL is not set → provider is disabled. */
+const BASE = process.env.ANIME_SAMA_URL?.trim()
+  ? siteBase(process.env.ANIME_SAMA_URL, "")
+  : undefined;
 
 interface Card {
   url: string;
@@ -49,13 +52,13 @@ export function parseCards(html: string): Card[] {
 
 const search = (query: string) =>
   cached(`as:search:${query.toLowerCase()}`, 6 * HOUR, async () =>
-    parseCards(await fetchText(`${BASE}/template-php/defaut/fetch.php`, { form: { query } })),
+    parseCards(await fetchText(`${BASE}/template-php/defaut/fetch.php`, { form: { query }, proxy: true })),
   );
 
 /** Season label → relative path, e.g. "Saison 2" → "saison2". */
 const seasons = (catalogueUrl: string) =>
   cached(`as:seasons:${catalogueUrl}`, 6 * HOUR, async () => {
-    const html = await fetchText(catalogueUrl);
+    const html = await fetchText(catalogueUrl, { proxy: true, headers: { Referer: "https://anime-sama.to/" } });
     const out: { name: string; path: string }[] = [];
     for (const m of html.matchAll(/panneauAnime\("(.+?)",\s*"(.+?)(?:vostfr|vf)"\);?/g)) {
       if (m[1] === "nom") continue; // template call in the page's own script
@@ -69,7 +72,10 @@ const playerLists = (seasonUrl: string) =>
   cached(`as:eps:${seasonUrl}`, 2 * HOUR, async () => {
     let js: string;
     try {
-      js = await fetchText(`${seasonUrl}episodes.js`);
+      js = await fetchText(`${seasonUrl}episodes.js`, {
+        proxy: true,
+        headers: { Referer: seasonUrl, Accept: "*/*", "sec-fetch-dest": "script", "sec-fetch-mode": "no-cors", "sec-fetch-site": "same-origin" },
+      });
     } catch (error) {
       if (error instanceof HttpError && error.status === 404) return [];
       throw error;
@@ -83,17 +89,18 @@ const playerLists = (seasonUrl: string) =>
 
 function pickSeason(list: { name: string; path: string }[], meta: AnimeMeta) {
   if (meta.format === "MOVIE") return list.find((s) => /film/i.test(s.name)) || null;
-  return (
-    list.find((s) => new RegExp(`^Saison\\s+${meta.season}$`, "i").test(s.name.trim())) ||
-    list.find((s) => new RegExp(`^Saison\\s+${meta.season}\\b`, "i").test(s.name.trim())) ||
-    null
-  );
+  const byN = (n: number) =>
+    list.find((s) => new RegExp(`^Saison\\s+${n}$`, "i").test(s.name.trim())) ||
+    list.find((s) => new RegExp(`^Saison\\s+${n}\\b`, "i").test(s.name.trim()));
+  // Exact AniList season match first; then S-1 (site may start at 1 when earlier seasons aren't hosted).
+  return byN(meta.season) || (meta.season > 1 ? byN(meta.season - 1) : null) || null;
 }
 
 export const animeSama: EmbedProvider = {
   id: "anime-sama",
   name: "Anime-Sama",
   async players(meta, episode) {
+    if (!BASE) return [];
     const variants = titleVariants(meta);
     let card: Card | undefined;
     for (const query of searchQueries(meta)) {

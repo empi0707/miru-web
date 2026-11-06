@@ -11,7 +11,10 @@ import type { AnimeMeta, EmbedCategory, EmbedPlayer, EmbedProvider } from "../ty
 import { cached, decodeHtml, fetchText, HOUR, isHttpUrl, siteBase, stripTags } from "../http";
 import { normalizeTitle, sameTitle, searchQueries, titleVariants, yearScore } from "../matching";
 
-const BASE = siteBase(process.env.VOIR_ANIME_URL, "https://voir-anime.to");
+/** Undefined when VOIR_ANIME_URL is not set → provider is disabled. */
+const BASE = process.env.VOIR_ANIME_URL?.trim()
+  ? siteBase(process.env.VOIR_ANIME_URL, "")
+  : undefined;
 
 interface Card {
   url: string;
@@ -97,6 +100,7 @@ export const voirAnime: EmbedProvider = {
   id: "voir-anime",
   name: "Voir-Anime",
   async players(meta, episode) {
+    if (!BASE) return [];
     const cards: Card[] = [];
     for (const query of searchQueries(meta)) {
       cards.push(...(await search(query)));
