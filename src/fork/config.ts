@@ -48,6 +48,17 @@ export const AUTH_ENABLED = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
 /** Comments (per-episode + recent comments on home). Disabled by default. */
 export const COMMENTS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_COMMENTS === "true";
 
+/**
+ * Country codes to exclude from all anime listings (comma-separated ISO 3166-1 alpha-2).
+ * e.g. NEXT_PUBLIC_FILTER_ANIME=CN,KR — empty = no filter.
+ */
+export const FILTER_ANIME_COUNTRIES: Set<string> = new Set(
+  (process.env.NEXT_PUBLIC_FILTER_ANIME || "")
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean),
+);
+
 /** Show brand text next to the logo in navbar/footer. Empty / unset = hidden. */
 export const LOGO_TEXT_ENABLED = process.env.NEXT_PUBLIC_ENABLE_LOGO_TEXT === "true";
 
@@ -66,3 +77,10 @@ export const EMBED_SOURCES: "en" | "fr" =
  */
 export const PRIMARY_PLAYER_ENABLED =
   env(process.env.NEXT_PUBLIC_ENABLE_PRIMARY_PLAYER, EMBED_SOURCES === "en" ? "true" : "false") === "true";
+
+/**
+ * Show English embed sources (Megaplay / VidLink / Autoembed) alongside French scrapers.
+ * Only applies when EMBED_SOURCES=fr. Default: true.
+ */
+export const EN_EMBEDS_ENABLED =
+  env(process.env.NEXT_PUBLIC_ENABLE_EN_EMBEDS, "true") === "true";

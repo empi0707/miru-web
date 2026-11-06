@@ -4,8 +4,16 @@ import {
 } from "@/types/miruro-api";
 import { IAnimeDetails } from "@/types/anime-details";
 import { IAnimeSearch, ISuggestionAnime, SearchAnimeParams } from "@/types/anime";
-
 const ANILIST_GRAPHQL_ENDPOINT = "https://graphql.anilist.co";
+
+const FILTER_COUNTRIES: Set<string> = new Set(
+  (process.env.NEXT_PUBLIC_FILTER_ANIME || "")
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean),
+);
+const isAllowedCountry = (item: { countryOfOrigin?: string }) =>
+  !FILTER_COUNTRIES.size || !FILTER_COUNTRIES.has(item.countryOfOrigin ?? "");
 
 const MEDIA_FIELDS = `
   id
@@ -57,9 +65,6 @@ const MEDIA_FIELDS = `
     }
   }
 `;
-
-const isNotChinese = (item: { countryOfOrigin?: string }) =>
-  item.countryOfOrigin !== "CN";
 
 export async function fetchAniListGraphQL<T = any>(
   query: string,
@@ -116,7 +121,7 @@ export async function getAniListPopular(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
+    results: results.filter((item: MediaList) => !item.isAdult && isAllowedCountry(item)),
   };
 }
 
@@ -150,7 +155,7 @@ export async function getAniListTrending(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
+    results: results.filter((item: MediaList) => !item.isAdult && isAllowedCountry(item)),
   };
 }
 
@@ -184,7 +189,7 @@ export async function getAniListUpcoming(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
+    results: results.filter((item: MediaList) => !item.isAdult && isAllowedCountry(item)),
   };
 }
 
@@ -218,7 +223,7 @@ export async function getAniListRecent(
     perPage: pageInfo.perPage,
     total: pageInfo.total,
     hasNextPage: pageInfo.hasNextPage,
-    results: results.filter((item: MediaList) => !item.isAdult && isNotChinese(item)),
+    results: results.filter((item: MediaList) => !item.isAdult && isAllowedCountry(item)),
   };
 }
 
@@ -235,7 +240,7 @@ export async function getAniListSpotlight(): Promise<MediaList[]> {
 
   const data = await fetchAniListGraphQL(query);
   const results = (data.Page?.media || []) as MediaList[];
-  return results.filter((item) => !item.isAdult && isNotChinese(item) && item.bannerImage);
+  return results.filter((item) => !item.isAdult && isAllowedCountry(item) && item.bannerImage);
 }
 
 export async function getAniListAnimeDetails(animeId: string): Promise<IAnimeDetails> {
@@ -576,7 +581,7 @@ export async function getAniListAnimeRelations(
   const edges = data.Media?.relations?.edges || [];
   return edges
     .map((e: any) => e.node as MediaList)
-    .filter((item: MediaList) => item && !item.isAdult && isNotChinese(item));
+    .filter((item: MediaList) => item && !item.isAdult && isAllowedCountry(item));
 }
 
 const SORT_MAPPING: Record<string, string[]> = {
@@ -749,7 +754,7 @@ export async function getAniListSearchResults(
   const pageInfo = data.Page?.pageInfo;
   const countCheck = data.countCheck?.pageInfo;
   const results = (data.Page?.media || []) as MediaList[];
-  const filtered = results.filter((m) => !m.isAdult && isNotChinese(m));
+  const filtered = results.filter((m) => !m.isAdult && isAllowedCountry(m));
 
   const currentPage = pageInfo?.currentPage || params.page || 1;
   const hasNextPage = Boolean(pageInfo?.hasNextPage);
@@ -815,7 +820,7 @@ export async function getAniListSearchSuggestions(
   `;
 
   const data = await fetchAniListGraphQL(query, { search: q.trim() });
-  const items = (data.Page?.media || []).filter((item: any) => item.countryOfOrigin !== "CN");
+  const items = (data.Page?.media || []).filter((item: any) => isAllowedCountry(item));
 
   return items.map((item: any) => ({
     id: String(item.id),

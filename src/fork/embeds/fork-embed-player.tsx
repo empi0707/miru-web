@@ -11,7 +11,7 @@ import { AlertCircle, Captions, Mic, Server, Tv } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { t } from "@/fork/i18n";
-import { BRAND, EMBED_SOURCES } from "@/fork/config";
+import { BRAND, EMBED_SOURCES, EN_EMBEDS_ENABLED } from "@/fork/config";
 import { englishPlayers } from "./en";
 import type { EmbedCategory, EmbedPlayer } from "./types";
 
@@ -56,7 +56,9 @@ export default function ForkEmbedPlayer({ anilistId, episode, category, onCatego
   );
 
   const players = useMemo(
-    () => (isFr ? frPlayers || [] : englishPlayers(anilistId, episode)),
+    () => isFr
+      ? [...(frPlayers || []), ...(EN_EMBEDS_ENABLED ? englishPlayers(anilistId, episode) : [])]
+      : englishPlayers(anilistId, episode),
     [isFr, frPlayers, anilistId, episode],
   );
 
