@@ -17,17 +17,30 @@ Rebase surfaces conflicts one commit at a time, which is easier than a merge.
 
 ## `src/app/layout.tsx`
 
-**Why:** Inject `BrandOverrideProvider` (URL-param brand/logo override) and `AdsLoader` (ads.html injection).
+**Why:** Inject `BrandOverrideProvider` (URL-param brand/logo override) and `AdsLoader` (ads.html injection); use `BRAND_ICON` for browser tab favicon separately from navbar logo.
 
 **Changes:**
 
-1. Add two imports after the existing fork imports:
+1. Update the fork config import to include `BRAND_ICON`:
+```ts
+import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_LOGO, BRAND_ICON, BRAND_APPLE_ICON } from "@/fork/config";
+```
+
+2. In the `metadata` object, change `icons.icon` from `BRAND_LOGO` to `BRAND_ICON`:
+```ts
+icons: {
+  icon: BRAND_ICON,
+  apple: BRAND_APPLE_ICON,
+},
+```
+
+3. Add two more imports after the existing fork imports:
 ```ts
 import { BrandOverrideProvider } from "@/fork/brand-override";
 import AdsLoader from "@/fork/ads-loader";
 ```
 
-2. In the JSX, wrap the entire `<body>` content with `<BrandOverrideProvider>` and add `<AdsLoader />` just before the closing `</BrandOverrideProvider>`:
+4. In the JSX, wrap the entire `<body>` content with `<BrandOverrideProvider>` and add `<AdsLoader />` just before the closing `</BrandOverrideProvider>`:
 ```tsx
 <body ...>
   <BrandOverrideProvider>
@@ -59,6 +72,7 @@ import { BRAND, BRAND_LOGO } from "@/fork/config";
 With:
 ```ts
 import { useBrandOverride } from "@/fork/brand-override";
+import { LOGO_TEXT_ENABLED } from "@/fork/config";
 ```
 
 2. Add at the top of the `NavBar` component body (before `const auth = ...`):
@@ -76,7 +90,9 @@ const { brand, logo, isExternalLogo } = useBrandOverride();
   <Image src={logo} alt={`${brand} logo`} width={40} height={40}
     className="rounded-xl shadow-lg transition-transform group-hover:scale-105" />
 )}
-<h1 className={...}>{brand}</h1>
+{LOGO_TEXT_ENABLED && (
+  <h1 className={...}>{brand}</h1>
+)}
 ```
 
 ---
@@ -98,6 +114,7 @@ With:
 ```ts
 import Image from "next/image";
 import { useBrandOverride } from "@/fork/brand-override";
+import { LOGO_TEXT_ENABLED } from "@/fork/config";
 ```
 
 3. Add at the top of the `Footer` component body:
@@ -113,7 +130,9 @@ const { brand, logo, isExternalLogo } = useBrandOverride();
 ) : (
   <Image src={logo} alt={`${brand} logo`} width={40} height={40} className="rounded-xl shadow-md" />
 )}
-<span ...>{brand}</span>
+{LOGO_TEXT_ENABLED && (
+  <span ...>{brand}</span>
+)}
 ```
 And replace `{ brand: BRAND }` → `{ brand }` in the `t()` call, and `{BRAND}` → `{brand}` in the copyright line.
 
