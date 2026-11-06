@@ -53,11 +53,19 @@ const episodeList = (url: string) =>
   cached(`va:list:${url}`, 2 * HOUR, async () => {
     const html = await fetchText(url);
     const list: Record<number, string> = {};
+    const allUrls: string[] = [];
     for (const m of html.matchAll(/<li class="wp-manga-chapter[^"]*">\s*<a href="([^"]+)">([\s\S]*?)<\/a>/g)) {
       const text = stripTags(m[2]);
-      const num = text.match(/-\s*(\d+)\s*$/) || m[1].match(/-(\d+)-(?:vostfr|vf)\/?$/i);
+      allUrls.push(m[1]);
+      const num =
+        text.match(/-\s*(\d+)\s*$/) ||
+        text.match(/\b(?:film|special|ova)\s+(\d+)\b/i) ||
+        m[1].match(/-(\d+)-(?:vostfr|vf)\/?$/i) ||
+        m[1].match(/\/(\d+)-(?:vostfr|vf)\/?$/i);
       if (num && !(Number(num[1]) in list)) list[Number(num[1])] = m[1];
     }
+    // Fallback: single-chapter entries (specials/OVAs with no episode number) → episode 1
+    if (Object.keys(list).length === 0 && allUrls.length === 1) list[1] = allUrls[0];
     return list;
   });
 
