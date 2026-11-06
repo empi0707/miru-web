@@ -10,7 +10,7 @@ import { frenchManga } from "./providers/french-manga";
 import { voirAnime } from "./providers/voir-anime";
 import { animeSama } from "./providers/anime-sama";
 
-const ALL: EmbedProvider[] = [frenchManga, voirAnime, animeSama];
+const ALL: EmbedProvider[] = [voirAnime, frenchManga, animeSama];
 
 export function enabledProviders(env = process.env.EMBED_PROVIDERS): EmbedProvider[] {
   const wanted = String(env || "")

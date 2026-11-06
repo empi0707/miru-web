@@ -86,16 +86,17 @@ const NavBar = () => {
             <img
               src={logo}
               alt={`${brand} logo`}
-              width={40}
-              height={40}
-              className="rounded-xl shadow-lg transition-transform group-hover:scale-105"
+              className={LOGO_TEXT_ENABLED
+                ? "w-10 h-10 rounded-xl shadow-lg transition-transform group-hover:scale-105"
+                : "max-w-[200px] h-auto rounded-xl shadow-lg transition-transform group-hover:scale-105"}
             />
           ) : (
             <Image
               src={logo}
               alt={`${brand} logo`}
-              width={40}
-              height={40}
+              width={LOGO_TEXT_ENABLED ? 40 : 200}
+              height={LOGO_TEXT_ENABLED ? 40 : 80}
+              style={LOGO_TEXT_ENABLED ? undefined : { height: "auto" }}
               className="rounded-xl shadow-lg transition-transform group-hover:scale-105"
             />
           )}

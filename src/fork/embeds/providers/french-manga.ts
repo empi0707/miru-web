@@ -108,7 +108,7 @@ function toPlayers(payload: EpisodesPayload, episode: number): EmbedPlayer[] {
       if (!isHttpUrl(clean)) continue;
       players.push({
         id: `french-manga:${category}:${host}`,
-        source: "French Manga",
+        source: "Lecteur 2",
         server: host.charAt(0).toUpperCase() + host.slice(1),
         category,
         url: clean,

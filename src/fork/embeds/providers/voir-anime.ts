@@ -118,7 +118,7 @@ export const voirAnime: EmbedProvider = {
         return Object.entries(await episodeSources(pageUrl)).map(
           ([server, url]): EmbedPlayer => ({
             id: `voir-anime:${category}:${normalizeTitle(server).replace(/ /g, "-")}`,
-            source: "Voir-Anime",
+            source: "Lecteur 1",
             server: server.charAt(0).toUpperCase() + server.slice(1).toLowerCase(),
             category,
             url,
