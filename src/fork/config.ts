@@ -28,6 +28,9 @@ export const BRAND_DESCRIPTION = env(
 /** Logo (navbar, footer, favicon, PWA icon). A path under /public, e.g. /brand/logo.svg. */
 export const BRAND_LOGO = env(process.env.NEXT_PUBLIC_BRAND_LOGO, "/miru-logo.svg");
 
+/** Browser tab / PWA icon (favicon). A path under /public or an absolute URL. */
+export const BRAND_ICON = env(process.env.NEXT_PUBLIC_BRAND_ICON, "/icon.png");
+
 /** Apple touch icon (PNG, ideally 180–192px). A path under /public. */
 export const BRAND_APPLE_ICON = env(process.env.NEXT_PUBLIC_BRAND_APPLE_ICON, "/icon-192x192.png");
 

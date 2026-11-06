@@ -11,7 +11,7 @@ import { PublicEnvScript } from "next-runtime-env";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_LOGO, BRAND_APPLE_ICON } from "@/fork/config";
+import { BRAND, BRAND_TAGLINE, BRAND_DESCRIPTION, BRAND_LOGO, BRAND_ICON, BRAND_APPLE_ICON } from "@/fork/config";
 import BrandStyle from "@/fork/brand-style";
 import { BrandOverrideProvider } from "@/fork/brand-override";
 import AdsLoader from "@/fork/ads-loader";
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   icons: {
-    icon: BRAND_LOGO,
+    icon: BRAND_ICON,
     apple: BRAND_APPLE_ICON,
   },
   appleWebApp: {
