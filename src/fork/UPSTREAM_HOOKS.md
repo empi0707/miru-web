@@ -179,3 +179,30 @@ loading: `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.o
 ```tsx
 <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
 ```
+
+---
+
+## `src/lib/anilist.ts`
+
+**Why:** Filter anime by country of origin using `NEXT_PUBLIC_FILTER_ANIME` env var (e.g. `CN` to exclude Chinese anime from all listings and search).
+
+**Changes:**
+
+1. After the existing imports, add:
+```ts
+const FILTER_COUNTRIES: Set<string> = new Set(
+  (process.env.NEXT_PUBLIC_FILTER_ANIME || "")
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean),
+);
+const isAllowedCountry = (item: { countryOfOrigin?: string }) =>
+  !FILTER_COUNTRIES.size || !FILTER_COUNTRIES.has(item.countryOfOrigin ?? "");
+```
+
+2. In every `results.filter(...)` call, add `&& isAllowedCountry(item)` alongside the existing `!item.isAdult` check. Affected functions: `getAniListPopular`, `getAniListTrending`, `getAniListUpcoming`, `getAniListRecent`, `getAniListSpotlight`, `getAniListAnimeRelations`, `getAniListSearchResults`.
+
+3. In `getAniListSearchSuggestions`: add `countryOfOrigin` to the GraphQL fields, then filter the result:
+```ts
+const items = (data.Page?.media || []).filter((item: any) => isAllowedCountry(item));
+```
