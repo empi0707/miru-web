@@ -45,6 +45,9 @@ export const AUTH_ENABLED = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
 /** Comments (per-episode + recent comments on home). Disabled by default. */
 export const COMMENTS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_COMMENTS === "true";
 
+/** Show brand text next to the logo in navbar/footer. Empty / unset = hidden. */
+export const LOGO_TEXT_ENABLED = process.env.NEXT_PUBLIC_ENABLE_LOGO_TEXT === "true";
+
 /* ---------- Embed sources ---------- */
 
 /**

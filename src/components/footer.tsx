@@ -4,6 +4,7 @@ import { t } from "@/fork/i18n";
 import React from "react";
 import Image from "next/image";
 import { useBrandOverride } from "@/fork/brand-override";
+import { LOGO_TEXT_ENABLED } from "@/fork/config";
 
 const Footer = () => {
   const { brand, logo, isExternalLogo } = useBrandOverride();
@@ -16,9 +17,11 @@ const Footer = () => {
         ) : (
           <Image src={logo} alt={`${brand} logo`} width={40} height={40} className="rounded-xl shadow-md" />
         )}
-        <span className="text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-500 to-cyan-400">
-          {brand}
-        </span>
+        {LOGO_TEXT_ENABLED && (
+          <span className="text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-500 to-cyan-400">
+            {brand}
+          </span>
+        )}
       </div>
       <p className="text-xs text-gray-400 text-center max-w-xl">
         {t("{brand} does not store any files on the server; it only displays metadata and links to media hosted on 3rd party services.", { brand })}

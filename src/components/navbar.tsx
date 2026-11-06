@@ -21,6 +21,7 @@ import { pb } from "@/lib/pocketbase";
 import NavbarAvatar from "./navbar-avatar";
 import { toast } from "sonner";
 import { useBrandOverride } from "@/fork/brand-override";
+import { LOGO_TEXT_ENABLED } from "@/fork/config";
 
 const menuItems: Array<{ title: string; href?: string }> = [];
 
@@ -98,14 +99,16 @@ const NavBar = () => {
               className="rounded-xl shadow-lg transition-transform group-hover:scale-105"
             />
           )}
-          <h1
-            className={cn([
-              nightTokyo.className,
-              "text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-500 to-cyan-400 tracking-widest",
-            ])}
-          >
-            {brand}
-          </h1>
+          {LOGO_TEXT_ENABLED && (
+            <h1
+              className={cn([
+                nightTokyo.className,
+                "text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-500 to-cyan-400 tracking-widest",
+              ])}
+            >
+              {brand}
+            </h1>
+          )}
         </Link>
 
         <div className="hidden lg:flex items-center gap-10 ml-20">
