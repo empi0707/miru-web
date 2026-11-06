@@ -1,5 +1,6 @@
 "use client";
 
+import { t } from "@/fork/i18n";
 import React, { useEffect, useState } from "react";
 import { useAnimeStore } from "@/store/anime-store";
 import dynamic from "next/dynamic";
@@ -8,12 +9,12 @@ const MiruPlayer = dynamic(() => import("@/components/miru-player"), {
   ssr: false,
 });
 import { useGetEpisodeData } from "@/query/get-episode-data";
-import { Captions, Mic, AlertCircle, Tv, Server } from "lucide-react";
+import { Captions, Mic, Tv } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BRAND } from "@/fork/config";
+import { PRIMARY_PLAYER_ENABLED } from "@/fork/config";
+import ForkEmbedPlayer from "@/fork/embeds/fork-embed-player";
 
 import { useGetAllEpisodes } from "@/query/get-all-episodes";
 
@@ -53,10 +54,9 @@ const VideoPlayerSection = () => {
   const isPrimaryDisabled = isSourceAvailable === false;
 
   const [useFallback, setUseFallback] = useState<boolean>(false);
-  const [fallbackServer, setFallbackServer] = useState<"megaplay" | "vidlink" | "autoembed">("megaplay");
 
   const { data: episodeData, isLoading: isLoadingData } =
-    useGetEpisodeData(activeEpisodeId, !isPrimaryDisabled && !useFallback);
+    useGetEpisodeData(activeEpisodeId, PRIMARY_PLAYER_ENABLED && !isPrimaryDisabled && !useFallback); // FORK: primary player flag
 
   const [autoSkip, setAutoSkip] = useState<boolean>(true);
   const [preferredCategory, setPreferredCategory] = useState<"sub" | "dub">("sub");
@@ -151,6 +151,7 @@ const VideoPlayerSection = () => {
   ]);
 
   const isFallbackActive =
+    !PRIMARY_PLAYER_ENABLED || // FORK: embeds only
     isSourceAvailable === false ||
     useFallback ||
     (!isLoadingData && (!episodeData || !episodeData.sources?.length));
@@ -277,115 +278,17 @@ const VideoPlayerSection = () => {
   if (isFallbackActive) {
     const fallbackAnimeId = animeIdParam || anime?.anime?.info?.id || "1";
     const fallbackEpId = currentEpNumber || "1";
-    let fallbackSrc = `https://megaplay.buzz/stream/ani/${fallbackAnimeId}/${fallbackEpId}/${activeCategory}`;
-    if (fallbackServer === "vidlink") {
-      fallbackSrc = `https://vidlink.pro/anime/${fallbackAnimeId}/${fallbackEpId}?sub=${activeCategory === "sub" ? 1 : 0}`;
-    } else if (fallbackServer === "autoembed") {
-      fallbackSrc = `https://player.autoembed.cc/embed/anime/${fallbackAnimeId}/${fallbackEpId}`;
-    }
 
+    // FORK: embed players from NEXT_PUBLIC_EMBED_SOURCES (src/fork/embeds).
     return (
-      <div className="flex flex-col gap-4 w-full">
-        <div className="relative w-full h-auto aspect-video min-h-[20vh] sm:min-h-[30vh] md:min-h-[40vh] lg:min-h-[60vh] max-h-[500px] lg:max-h-[calc(100vh-150px)] bg-black overflow-hidden rounded-xl border border-slate-800">
-          <iframe
-            key={`${fallbackServer}-${fallbackAnimeId}-${fallbackEpId}-${activeCategory}`}
-            src={fallbackSrc}
-            width="100%"
-            height="100%"
-            allowFullScreen
-            className="w-full h-full border-0"
-          ></iframe>
-        </div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-xs font-bold text-slate-400 tracking-wider">CATEGORY:</span>
-            <Button
-              size="sm"
-              variant="ghost"
-              disabled={!hasSub}
-              onClick={() => handleCategoryChange("sub")}
-              className={`h-8 px-4 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition ${
-                activeCategory === "sub"
-                  ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold shadow-md shadow-cyan-500/25"
-                  : "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              <Captions className="h-3.5 w-3.5" /> SUB
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              disabled={!hasDub}
-              onClick={() => handleCategoryChange("dub")}
-              className={`h-8 px-4 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition ${
-                activeCategory === "dub"
-                  ? "bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/25"
-                  : "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              <Mic className="h-3.5 w-3.5" /> DUB
-            </Button>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-400 tracking-wider flex items-center gap-1">
-              <Server className="h-3.5 w-3.5 text-cyan-400" /> SERVER:
-            </span>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setFallbackServer("megaplay")}
-              className={`h-8 px-3 text-xs font-semibold rounded-xl transition ${
-                fallbackServer === "megaplay"
-                  ? "bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/25 hover:bg-cyan-400"
-                  : "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              Megaplay
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setFallbackServer("vidlink")}
-              className={`h-8 px-3 text-xs font-semibold rounded-xl transition ${
-                fallbackServer === "vidlink"
-                  ? "bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/25 hover:bg-cyan-400"
-                  : "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              VidLink
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setFallbackServer("autoembed")}
-              className={`h-8 px-3 text-xs font-semibold rounded-xl transition ${
-                fallbackServer === "autoembed"
-                  ? "bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/25 hover:bg-cyan-400"
-                  : "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              Autoembed
-            </Button>
-          </div>
-
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setUseFallback(false)}
-            className="h-8 px-3 text-xs border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-gray-200 flex items-center gap-1.5 shrink-0 self-start md:self-auto"
-          >
-            <Tv className="h-3.5 w-3.5 text-blue-400" /> Try Primary Player
-          </Button>
-        </div>
-        <Alert variant="default" className="border-violet-900/60 bg-violet-950/20 text-violet-300 rounded-xl">
-          <AlertCircle className="h-4 w-4 text-violet-400" />
-          <AlertTitle className="font-bold">{BRAND} Stream Player Active</AlertTitle>
-          <AlertDescription className="text-xs text-violet-300/80 mt-1">
-            Streaming via fast ad-free player. You can switch servers or categories above at any time.
-          </AlertDescription>
-        </Alert>
-      </div>
+      <ForkEmbedPlayer
+        anilistId={String(fallbackAnimeId)}
+        episode={Number(fallbackEpId) || 1}
+        category={activeCategory}
+        onCategoryChange={handleCategoryChange}
+        enCategories={{ sub: hasSub, dub: hasDub }}
+        onTryPrimary={PRIMARY_PLAYER_ENABLED ? () => setUseFallback(false) : undefined}
+      />
     );
   }
 
@@ -414,7 +317,7 @@ const VideoPlayerSection = () => {
         <div className="flex flex-col gap-3 w-full md:w-auto">
           <div className="flex flex-wrap items-center gap-3">
             <Captions className="text-cyan-400 h-4 w-4 shrink-0" />
-            <p className="font-bold text-xs text-slate-300 tracking-wider">SERVERS (SUB):</p>
+            <p className="font-bold text-xs text-slate-300 tracking-wider">{t("SERVERS (SUB):")}</p>
             {providerNames.map((pName) => {
               const hasSub = (rawProviders[pName]?.episodes?.sub || []).length > 0;
               if (!hasSub) return null;
@@ -442,7 +345,7 @@ const VideoPlayerSection = () => {
           {providerNames.some((p) => (rawProviders[p]?.episodes?.dub || []).length > 0) && (
             <div className="flex flex-wrap items-center gap-3 mt-1">
               <Mic className="text-emerald-400 h-4 w-4 shrink-0" />
-              <p className="font-bold text-xs text-slate-300 tracking-wider">SERVERS (DUB):</p>
+              <p className="font-bold text-xs text-slate-300 tracking-wider">{t("SERVERS (DUB):")}</p>
               {providerNames.map((pName) => {
                 const hasDub = (rawProviders[pName]?.episodes?.dub || []).length > 0;
                 if (!hasDub) return null;
@@ -475,7 +378,7 @@ const VideoPlayerSection = () => {
             onClick={() => setUseFallback(true)}
             className="h-8 px-3 text-xs border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-gray-200 flex items-center gap-1.5"
           >
-            <Tv className="h-3.5 w-3.5 text-yellow-400" /> Switch to Fallback Player
+            <Tv className="h-3.5 w-3.5 text-yellow-400" /> {t("Switch to Fallback Player")}
           </Button>
           <div className="flex flex-row items-center space-x-2">
             <Switch
@@ -483,7 +386,7 @@ const VideoPlayerSection = () => {
               onCheckedChange={(e) => onHandleAutoSkipChange(e)}
               id="auto-skip"
             />
-            <p>Auto Skip</p>
+            <p>{t("Auto Skip")}</p>
           </div>
         </div>
       </div>

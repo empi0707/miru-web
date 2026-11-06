@@ -45,3 +45,18 @@ export const AUTH_ENABLED = process.env.NEXT_PUBLIC_ENABLE_AUTH === "true";
 /** Comments (per-episode + recent comments on home). Disabled by default. */
 export const COMMENTS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_COMMENTS === "true";
 
+/* ---------- Embed sources ---------- */
+
+/**
+ * Embed player set: "en" = Megaplay / VidLink / Autoembed (by AniList id),
+ * "fr" = French sites scraped server-side (/api/fork-embeds), VF / VOSTFR.
+ */
+export const EMBED_SOURCES: "en" | "fr" =
+  env(process.env.NEXT_PUBLIC_EMBED_SOURCES, "en").toLowerCase() === "fr" ? "fr" : "en";
+
+/**
+ * Primary (HLS API) player before the embeds. Defaults to on for "en" and off
+ * for "fr" (its streams are English sub/dub only).
+ */
+export const PRIMARY_PLAYER_ENABLED =
+  env(process.env.NEXT_PUBLIC_ENABLE_PRIMARY_PLAYER, EMBED_SOURCES === "en" ? "true" : "false") === "true";

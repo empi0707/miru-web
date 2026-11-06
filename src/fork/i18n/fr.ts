@@ -251,6 +251,10 @@ const fr: Dictionary = {
   Display: "Affichage",
   Hide: "Masquer",
   Show: "Afficher",
+  "Searching for players…": "Recherche des lecteurs…",
+  "No player found for this episode.": "Aucun lecteur trouvé pour cet épisode.",
+  "Streaming via external players. If one does not load, pick another server above.":
+    "Lecture via des lecteurs externes. Si l'un ne charge pas, choisissez un autre serveur ci-dessus.",
 };
 
 export default fr;
